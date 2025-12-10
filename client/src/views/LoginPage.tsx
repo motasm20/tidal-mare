@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { authViewModel } from '../viewmodels';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 // @ts-ignore
-import { EnvelopeIcon, LockClosedIcon } from '../components/Icons';
+import { EnvelopeIcon, LockClosedIcon, UserIcon } from '../components/Icons';
 
 const authVM = authViewModel;
 
@@ -88,57 +88,6 @@ export const LoginPage: React.FC = observer(() => {
 
                 {authVM.error && <p className="error-message mb-4">{authVM.error}</p>}
 
-                <button
-                    onClick={handleGoogleLogin}
-                    className="google-btn w-full mb-3"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '12px',
-                        background: '#ffffff',
-                        color: '#3c4043',
-                        border: '1px solid #dadce0',
-                        padding: '12px',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontWeight: 500,
-                        fontSize: '14px',
-                        fontFamily: 'Roboto, arial, sans-serif',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                        transition: 'background-color .2s box-shadow .2s'
-                    }}
-                >
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '18px', height: '18px' }} />
-                    Inloggen met Google
-                </button>
-
-                <button
-                    onClick={handleGuestLogin}
-                    className="guest-btn w-full mb-4"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '10px',
-                        background: '#f8f9fa',
-                        color: '#666',
-                        border: '1px solid #ccc',
-                        padding: '10px',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '14px'
-                    }}
-                >
-                    👤 Doorgaan als gast
-                </button>
-
-                <div className="divider" style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: '#666' }}>
-                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
-                    <span style={{ padding: '0 10px', fontSize: '0.9rem' }}>of met email</span>
-                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
-                </div>
-
                 <form onSubmit={handleLogin}>
                     <div className="form-group">
                         <label className="form-label">Email</label>
@@ -166,11 +115,6 @@ export const LoginPage: React.FC = observer(() => {
                                 onChange={e => setPassword(e.target.value)}
                                 required
                             />
-                            <div style={{ textAlign: 'right', marginTop: '0.5rem', width: '100%' }}>
-                                <button type="button" onClick={() => setResetMode(true)} style={{ background: 'none', border: 'none', color: '#666', fontSize: '0.8rem', cursor: 'pointer', textDecoration: 'underline' }}>
-                                    Wachtwoord vergeten?
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <button type="submit" className="btn-primary w-full mt-4" disabled={authVM.isLoading} style={{ width: '100%', padding: '12px' }}>
@@ -178,8 +122,63 @@ export const LoginPage: React.FC = observer(() => {
                     </button>
                 </form>
 
-                <div className="mt-4 text-center" style={{ marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--slate-500)' }}>
-                    Nog geen account? <Link to="/register" style={{ fontWeight: 600 }}>Registreer hier</Link>
+                <div className="divider" style={{ display: 'flex', alignItems: 'center', margin: '2rem 0', color: '#666' }}>
+                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
+                    <span style={{ padding: '0 10px', fontSize: '0.9rem', color: '#94a3b8' }}>of log in met</span>
+                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
+                </div>
+
+                <div className="social-login-buttons" style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                    <button
+                        onClick={handleGoogleLogin}
+                        className="social-btn-round"
+                        title="Inloggen met Google"
+                        style={{
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            border: '1px solid #e2e8f0',
+                            background: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                        }}
+                    >
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '24px', height: '24px' }} />
+                    </button>
+
+                    <button
+                        onClick={handleGuestLogin}
+                        className="social-btn-round"
+                        title="Doorgaan als gast"
+                        style={{
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            border: '1px solid #e2e8f0',
+                            background: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                        }}
+                    >
+                        <UserIcon className="w-6 h-6 text-slate-600" style={{ width: '24px', height: '24px', color: '#475569' }} />
+                    </button>
+                </div>
+
+                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <button type="button" onClick={() => setResetMode(true)} style={{ background: 'none', border: 'none', color: '#666', fontSize: '0.9rem', cursor: 'pointer', textDecoration: 'none' }}>
+                        Wachtwoord vergeten?
+                    </button>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--slate-500)' }}>
+                        Nog geen account? <Link to="/register" style={{ fontWeight: 600 }}>Registreer hier</Link>
+                    </div>
                 </div>
             </div>
         </div>
