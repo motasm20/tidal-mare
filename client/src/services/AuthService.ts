@@ -1,11 +1,12 @@
-createUserWithEmailAndPassword,
+import {
+    createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    type User, // Type-only import
-        GoogleAuthProvider,
-        signInWithPopup
+    GoogleAuthProvider,
+    signInWithPopup
 } from "firebase/auth";
+import type { User } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { StorageService } from "./StorageService";
 
