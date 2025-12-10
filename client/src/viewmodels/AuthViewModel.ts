@@ -120,6 +120,23 @@ export class AuthViewModel {
         }
     }
 
+    async resetPassword(email: string): Promise<void> {
+        this.isLoading = true;
+        this.error = null;
+        try {
+            await AuthService.resetPassword(email);
+        } catch (e: any) {
+            runInAction(() => {
+                this.error = e.message || 'Reset password failed';
+            });
+            throw e;
+        } finally {
+            runInAction(() => {
+                this.isLoading = false;
+            });
+        }
+    }
+
     logout(): void {
         AuthService.logout();
         this.user = null;
