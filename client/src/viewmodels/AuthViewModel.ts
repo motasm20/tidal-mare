@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import type { UserDTO } from '../models';
-import { StorageService } from '../services/StorageService';
-import api from '../services/ApiService';
+import { AuthService } from '../services/AuthService';
 
 export class AuthViewModel {
     user: UserDTO | null = null;
@@ -32,16 +31,18 @@ export class AuthViewModel {
         this.isLoading = true;
         this.error = null;
         try {
-            const response = await api.post('/auth/login', { email, password });
-            const { token, user } = response.data;
-
-            StorageService.setToken(token);
+            const user = await AuthService.login(email, password);
             runInAction(() => {
-                this.user = user;
+                // Map Firebase user to UserDTO
+                this.user = {
+                    id: user.uid,
+                    email: user.email || '',
+                    role: 'customer' // Default role for now, or fetch from Firestore if we store roles there
+                };
             });
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.response?.data?.message || 'Login failed';
+                this.error = e.message || 'Login failed';
             });
         } finally {
             runInAction(() => {
@@ -54,16 +55,17 @@ export class AuthViewModel {
         this.isLoading = true;
         this.error = null;
         try {
-            const response = await api.post('/auth/register', { email, password });
-            const { token, user } = response.data;
-
-            StorageService.setToken(token);
+            const user = await AuthService.register(email, password);
             runInAction(() => {
-                this.user = user;
+                this.user = {
+                    id: user.uid,
+                    email: user.email || '',
+                    role: 'customer'
+                };
             });
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.response?.data?.message || 'Registration failed';
+                this.error = e.message || 'Registration failed';
             });
         } finally {
             runInAction(() => {
@@ -73,16 +75,23 @@ export class AuthViewModel {
     }
 
     logout(): void {
-        StorageService.removeToken();
+        AuthService.logout();
         this.user = null;
     }
 
     private checkAuth(): void {
-        const token = StorageService.getToken();
-        if (token) {
-            // Ideally verify token with backend
-            // For now, just assume logged in if token exists (and maybe decode it later)
-            this.user = { id: '1', email: 'restored@example.com', role: 'customer' }; // Placeholder
-        }
+        AuthService.onAuthStateChanged((user) => {
+            runInAction(() => {
+                if (user) {
+                    this.user = {
+                        id: user.uid,
+                        email: user.email || '',
+                        role: 'customer'
+                    };
+                } else {
+                    this.user = null;
+                }
+            });
+        });
     }
 }

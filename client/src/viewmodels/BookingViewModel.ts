@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import { BookingStatus, ProviderType, FuelType } from '../models';
 import type { CarDTO } from '../models';
-import api from '../services/ApiService';
+import { BookingService } from '../services/BookingService';
 import type { AddressSuggestion } from '../services/AddressSuggestionService';
 
 export class BookingViewModel {
@@ -196,8 +196,8 @@ export class BookingViewModel {
 
         this.isLoading = true;
         try {
-            const bookingPayload: any = {
-                userId: '1',
+            const bookingPayload = {
+                userId: '1', // TODO: Get actual user ID from AuthViewModel
                 carId: this.selectedCar.id,
                 startLocation: {
                     address: `${this.startStreet} ${this.startHouseNumber}, ${this.startCity}`,
@@ -212,17 +212,17 @@ export class BookingViewModel {
                 startTime: this.dateTime,
                 totalPrice: this.selectedCar.pricePerHourEstimate * 2,
                 note: this.bookingNote,
-                status: BookingStatus.CONFIRMED
+                status: BookingStatus.REQUESTED // Changed to REQUESTED for realism
             };
 
-            await api.post('/bookings', bookingPayload);
+            await BookingService.createBooking(bookingPayload as any);
 
             runInAction(() => {
-                this.bookingStatus = BookingStatus.CONFIRMED;
+                this.bookingStatus = BookingStatus.REQUESTED;
             });
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.response?.data?.message || "Booking failed";
+                this.error = e.message || "Booking failed";
             });
         } finally {
             runInAction(() => {
@@ -266,7 +266,7 @@ export class BookingViewModel {
     async cancelBooking(id: string, reason?: string) {
         this.isCancelling = true;
         try {
-            await api.patch(`/bookings/${id}/cancel`, { reason });
+            await BookingService.updateBookingStatus(id, 'CANCELLED', reason);
             if (this.selectedBookingDetails?.id === id) {
                 await this.loadBookingDetails(id);
             }
@@ -279,8 +279,8 @@ export class BookingViewModel {
 
     async loadBookingDetails(id: string) {
         try {
-            const res = await api.get(`/bookings/${id}`);
-            runInAction(() => this.selectedBookingDetails = res.data);
+            const booking = await BookingService.getBookingById(id);
+            runInAction(() => this.selectedBookingDetails = booking);
         } catch (e) { console.error(e); }
     }
 }

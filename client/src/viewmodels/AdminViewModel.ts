@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import type { CarDTO, ChargingPointDTO } from '../models';
-import api from '../services/ApiService';
+import { AdminService } from '../services/AdminService';
 
 export class AdminViewModel {
     cars: CarDTO[] = [];
@@ -16,13 +16,13 @@ export class AdminViewModel {
         this.isLoading = true;
         try {
             const [carsRes, pointsRes] = await Promise.all([
-                api.get('/cars'),
-                api.get('/charging-points')
+                AdminService.getCars(),
+                AdminService.getChargingPoints()
             ]);
 
             runInAction(() => {
-                this.cars = carsRes.data;
-                this.chargingPoints = pointsRes.data;
+                this.cars = carsRes;
+                this.chargingPoints = pointsRes;
             });
         } catch (e) {
             console.error("Failed to load admin data", e);
@@ -36,9 +36,9 @@ export class AdminViewModel {
     async addCar(car: Omit<CarDTO, 'id'>) {
         this.isLoading = true;
         try {
-            const response = await api.post('/cars', car);
+            const newCar = await AdminService.addCar(car);
             runInAction(() => {
-                this.cars.push(response.data);
+                this.cars.push(newCar);
             });
         } catch (e) {
             console.error("Failed to add car", e);
@@ -53,7 +53,7 @@ export class AdminViewModel {
     async deleteCar(id: string) {
         this.isLoading = true;
         try {
-            await api.delete(`/cars/${id}`);
+            await AdminService.deleteCar(id);
             runInAction(() => {
                 this.cars = this.cars.filter(c => c.id !== id);
             });
@@ -69,9 +69,9 @@ export class AdminViewModel {
     async addChargingPoint(point: Omit<ChargingPointDTO, 'id'>) {
         this.isLoading = true;
         try {
-            const response = await api.post('/charging-points', point);
+            const newPoint = await AdminService.addChargingPoint(point);
             runInAction(() => {
-                this.chargingPoints.push(response.data);
+                this.chargingPoints.push(newPoint);
             });
         } catch (e) {
             console.error("Failed to add charging point", e);
@@ -86,7 +86,7 @@ export class AdminViewModel {
     async deleteChargingPoint(id: string) {
         this.isLoading = true;
         try {
-            await api.delete(`/charging-points/${id}`);
+            await AdminService.deleteChargingPoint(id);
             runInAction(() => {
                 this.chargingPoints = this.chargingPoints.filter(cp => cp.id !== id);
             });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import api from '../services/ApiService';
+import { BookingService } from '../services/BookingService';
 import type { BookingDTO } from '../models';
 import { SustainabilityStats } from '../components/SustainabilityStats';
 import { authViewModel } from '../viewmodels';
@@ -13,17 +13,19 @@ export const Dashboard: React.FC = observer(() => {
 
     React.useEffect(() => {
         const fetchBookings = async () => {
+            // Use the actual logged-in user ID
+            const userId = authViewModel.user?.id;
+            if (!userId) return;
+
             try {
-                // For MVP, passing userId as query param. In real app, token handles it.
-                // Assuming '1' is the user ID for now (same as in AuthVM placeholder)
-                const response = await api.get('/bookings?userId=1');
-                setBookings(response.data);
+                const userBookings = await BookingService.getUserBookings(userId);
+                setBookings(userBookings);
             } catch (err) {
                 console.error("Failed to fetch bookings", err);
             }
         };
         fetchBookings();
-    }, []);
+    }, [authViewModel.user]);
 
     // Split bookings
     const upcomingBookings = bookings.filter(b => ['REQUESTED', 'CONFIRMED'].includes(b.status));
