@@ -143,7 +143,7 @@ export const RequestCarPage: React.FC = observer(() => {
         if (user?.role === 'guest') {
             // Redirect guests to register
             if (confirm("Als gast kun je niet boeken. Wil je een account aanmaken?")) {
-                window.location.href = '#/register'; // Using hash router or regular link
+                navigate('/register');
             }
             return;
         }
