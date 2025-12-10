@@ -4,7 +4,7 @@ import { authViewModel } from '../viewmodels';
 import { useNavigate, Link } from 'react-router-dom';
 // @ts-ignore
 import googleLogo from '../assets/google-logo.png';
-import { EnvelopeIcon, LockClosedIcon, UserIcon } from '../components/Icons';
+import { EnvelopeIcon, LockClosedIcon } from '../components/Icons';
 
 const authVM = authViewModel;
 

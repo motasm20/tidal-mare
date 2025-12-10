@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { authViewModel } from '../viewmodels';
 import { Link, useNavigate } from 'react-router-dom';
 // @ts-ignore
-import { EnvelopeIcon, LockClosedIcon, UserIcon } from '../components/Icons';
+import { EnvelopeIcon, LockClosedIcon } from '../components/Icons';
 
 const authVM = authViewModel;
 
