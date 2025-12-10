@@ -79,7 +79,7 @@ export const RegisterPage: React.FC = observer(() => {
                     <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
                 </div>
 
-                <div className="social-login-buttons" style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <div className="social-login-buttons" style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '1rem' }}>
                     <button
                         onClick={handleGoogleLogin}
                         className="social-btn-round"
@@ -100,26 +100,23 @@ export const RegisterPage: React.FC = observer(() => {
                     >
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '24px', height: '24px' }} />
                     </button>
+                </div>
 
+                <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                     <button
                         onClick={handleGuestLogin}
-                        className="social-btn-round"
-                        title="Doorgaan als gast"
+                        className="guest-text-link"
                         style={{
-                            width: '50px',
-                            height: '50px',
-                            borderRadius: '50%',
-                            border: '1px solid #e2e8f0',
-                            background: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
+                            background: 'none',
+                            border: 'none',
+                            color: '#64748b',
+                            fontSize: '0.9rem',
                             cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                            textDecoration: 'underline',
+                            padding: '5px'
                         }}
                     >
-                        <UserIcon style={{ width: '24px', height: '24px', color: '#555', stroke: '#555', strokeWidth: '1.5' }} />
+                        Of ga door als gast
                     </button>
                 </div>
 
