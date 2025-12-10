@@ -20,7 +20,7 @@ class BookingService {
             console.warn("Booking created without valid Car object");
         }
 
-        booking.status = BookingStatus.REQUESTED;
+        booking.status = booking.status || BookingStatus.REQUESTED;
         booking.id = Math.random().toString();
 
         return BookingsRepo.create(booking);

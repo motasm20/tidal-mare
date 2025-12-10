@@ -5,12 +5,14 @@ import { BookingViewModel } from '../viewmodels/BookingViewModel';
 import { authViewModel } from '../viewmodels';
 import { AddressAutocomplete } from '../components/AddressAutocomplete';
 import { MapPinIcon, UserIcon, HomeIcon, BriefcaseIcon } from '../components/Icons';
+import { CarMap } from '../components/CarMap';
 import { AnimatedBackground } from '../components/AnimatedBackground';
 
 const bookingVM = new BookingViewModel();
 
 export const RequestCarPage: React.FC = observer(() => {
     const { user } = authViewModel;
+    const [isMapView, setIsMapView] = React.useState(true); // Default to Map View
 
     const playSuccessSound = () => {
         try {
@@ -350,45 +352,102 @@ export const RequestCarPage: React.FC = observer(() => {
                     <div style={{ marginTop: '4rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                             <h3 style={{ fontSize: '1.8rem', fontWeight: '800', color: 'white' }}>Beschikbare Auto's</h3>
-                            <span className="status-badge status-completed">{bookingVM.availableCars.length} gevonden</span>
+                            <div style={{ display: 'flex', background: '#374151', padding: '4px', borderRadius: '12px' }}>
+                                <button
+                                    onClick={() => setIsMapView(false)}
+                                    style={{
+                                        padding: '0.5rem 1.25rem',
+                                        borderRadius: '8px',
+                                        background: !isMapView ? '#111827' : 'transparent',
+                                        color: !isMapView ? 'white' : '#9ca3af',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        fontWeight: '600',
+                                        transition: 'all 0.2s',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px'
+                                    }}
+                                >
+                                    📋 Lijst
+                                </button>
+                                <button
+                                    onClick={() => setIsMapView(true)}
+                                    style={{
+                                        padding: '0.5rem 1.25rem',
+                                        borderRadius: '8px',
+                                        background: isMapView ? '#111827' : 'transparent',
+                                        color: isMapView ? 'white' : '#9ca3af',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        fontWeight: '600',
+                                        transition: 'all 0.2s',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px'
+                                    }}
+                                >
+                                    🗺️ Kaart
+                                </button>
+                            </div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
-                            {bookingVM.availableCars.map(car => (
-                                <div key={car.id} style={{ ...cardStyle, padding: 0, overflow: 'hidden' }}>
-                                    <div style={{ height: '180px', background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <div style={{ fontSize: '4rem', opacity: 0.8 }}>🚙</div>
-                                        <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(255,255,255,0.9)', padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.8rem', fontWeight: '700', color: '#374151' }}>
-                                            {car.seats} stoelen
-                                        </div>
-                                    </div>
-                                    <div style={{ padding: '1.5rem' }}>
-                                        <h4 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem', color: '#111827' }}>{car.make} {car.model}</h4>
-                                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                                            <span style={{ background: '#f3f4f6', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600', color: '#4b5563' }}>{car.fuelType}</span>
-                                            <span style={{ background: '#f3f4f6', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600', color: '#4b5563' }}>Automaat</span>
-                                        </div>
-
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #f3f4f6', paddingTop: '1rem' }}>
-                                            <div>
-                                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#9ca3af', fontWeight: '700', marginBottom: '2px' }}>Prijs indicatie</div>
-                                                <div style={{ fontSize: '1.5rem', fontWeight: '800', color: '#111827' }}>€{car.pricePerHourEstimate}<span style={{ fontSize: '0.9rem', color: '#6b7280', fontWeight: '400' }}>/u</span></div>
+                        {isMapView ? (
+                            <div className="fade-in">
+                                <CarMap
+                                    cars={bookingVM.availableCars}
+                                    center={[52.3676, 4.9041]} // Mock center (Amsterdam) as we don't have accurate lat/lng in VM yet
+                                    onSelectCar={(car) => {
+                                        bookingVM.selectCar(car);
+                                        bookingVM.confirmBooking();
+                                    }}
+                                />
+                                <p style={{ marginTop: '1rem', color: '#6b7280', fontSize: '0.85rem', textAlign: 'center' }}>
+                                    * Locaties zijn bij benadering weergegeven.
+                                </p>
+                            </div>
+                        ) : (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+                                {bookingVM.availableCars.map(car => (
+                                    <div key={car.id} style={{ ...cardStyle, padding: 0, overflow: 'hidden' }}>
+                                        <div style={{ height: '180px', background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <div style={{ fontSize: '4rem', opacity: 0.8 }}>🚙</div>
+                                            <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(255,255,255,0.9)', padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.8rem', fontWeight: '700', color: '#374151' }}>
+                                                {car.seats} stoelen
                                             </div>
-                                            <button
-                                                onClick={() => {
-                                                    bookingVM.selectCar(car);
-                                                    bookingVM.confirmBooking();
-                                                }}
-                                                className="btn-primary"
-                                                style={{ background: '#111827', boxShadow: '0 4px 6px rgba(0,0,0,0.2)' }}
-                                            >
-                                                Boek Nu
-                                            </button>
+                                        </div>
+                                        <div style={{ padding: '1.5rem' }}>
+                                            <h4 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem', color: '#111827' }}>{car.make} {car.model}</h4>
+                                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                                                <span style={{ background: '#f3f4f6', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600', color: '#4b5563' }}>{car.fuelType}</span>
+                                                <span style={{ background: '#f3f4f6', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600', color: '#4b5563' }}>Automaat</span>
+                                            </div>
+
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #f3f4f6', paddingTop: '1rem' }}>
+                                                <div>
+                                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#9ca3af', fontWeight: '700', marginBottom: '2px' }}>Prijs indicatie</div>
+                                                    <div style={{ fontSize: '1.5rem', fontWeight: '800', color: '#111827' }}>€{car.pricePerHourEstimate}<span style={{ fontSize: '0.9rem', color: '#6b7280', fontWeight: '400' }}>/u</span></div>
+                                                </div>
+                                                <button
+                                                    onClick={() => {
+                                                        bookingVM.selectCar(car);
+                                                        bookingVM.confirmBooking();
+                                                    }}
+                                                    className="btn-primary"
+                                                    style={{ background: '#111827', boxShadow: '0 4px 6px rgba(0,0,0,0.2)' }}
+                                                >
+                                                    Boek Nu
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
+                        <style>{`
+                            .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+                            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                        `}</style>
                     </div>
                 )}
 

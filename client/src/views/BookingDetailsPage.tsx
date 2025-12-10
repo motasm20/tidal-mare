@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useParams, Link } from 'react-router-dom';
 import { BookingViewModel } from '../viewmodels/BookingViewModel';
+import { SmartKey } from '../components/SmartKey';
 
 // Use a singleton or context in real app, creating here for simplicity/mvp per existing pattern
 const vm = new BookingViewModel();
@@ -138,33 +139,48 @@ export const BookingDetailsPage: React.FC = observer(() => {
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Actions */}
-                    {canCancel && (
-                        <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'flex-end' }}>
-                            <button
-                                onClick={() => setShowCancelDialog(true)}
-                                style={{
-                                    padding: '0.625rem 1.5rem',
-                                    background: 'white',
-                                    border: '1px solid #fecaca',
-                                    color: '#dc2626',
-                                    fontWeight: '500',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    transition: 'all 0.2s',
-                                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-                                }}
-                            >
-                                🚫 Rit Annuleren
-                            </button>
-                        </div>
-                    )}
+                    </div>
                 </div>
+
+                {/* Smart Key Section (Only if CONFIRMED) */}
+                {booking.status === 'CONFIRMED' && (
+                    <div style={{ marginTop: '2.5rem', paddingTop: '2rem', borderTop: '1px solid #f3f4f6' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1.5rem', textAlign: 'center' }}>Jouw Digitale Sleutel</h3>
+                        <div style={{ maxWidth: '360px', margin: '0 auto' }}>
+                            <SmartKey
+                                carName={`${booking.car?.make} ${booking.car?.model}`}
+                                licensePlate="T-123-XY"
+                                onUnlock={() => console.log('Unlocked from details!')}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* Actions */}
+                {canCancel && (
+                    <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'flex-end' }}>
+                        <button
+                            onClick={() => setShowCancelDialog(true)}
+                            style={{
+                                padding: '0.625rem 1.5rem',
+                                background: 'white',
+                                border: '1px solid #fecaca',
+                                color: '#dc2626',
+                                fontWeight: '500',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                transition: 'all 0.2s',
+                                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                            }}
+                        >
+                            🚫 Rit Annuleren
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Cancel Modal */}

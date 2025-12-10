@@ -46,6 +46,8 @@ export interface CarDTO {
     provider: ProviderType;
     imageUrl?: string;
     pricePerHourEstimate: number;
+    location?: LocationDTO;
+    rating?: number; // Added for UI
 }
 
 export interface BookingDTO {

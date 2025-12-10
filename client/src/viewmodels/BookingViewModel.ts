@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import { BookingStatus } from '../models';
+import { BookingStatus, ProviderType, FuelType } from '../models';
 import type { CarDTO, LocationDTO } from '../models';
 import api from '../services/ApiService';
 import type { AddressSuggestion } from '../services/AddressSuggestionService';
@@ -133,45 +133,58 @@ export class BookingViewModel {
             return;
         }
 
+        // Mock API call for demo stability
         this.isLoading = true;
         this.error = null;
         this.availableCars = [];
 
-        // Construct DTOs on the fly
-        const startLocation: LocationDTO = {
-            address: `${this.startStreet} ${this.startHouseNumber}, ${this.startCity}`,
-            latitude: this.startLat || 0,
-            longitude: this.startLng || 0
-        };
-
-        const endLocation: LocationDTO = {
-            address: `${this.endStreet} ${this.endHouseNumber}, ${this.endCity}`,
-            latitude: this.endLat || 0,
-            longitude: this.endLng || 0
-        };
-
-        try {
-            const response = await api.post('/matching/search', {
-                startLocation,
-                endLocation,
-                passengers: this.passengers,
-                luggageLevel: this.luggageLevel,
-                dateTime: this.dateTime
-            });
-
+        // Simulate network delay
+        setTimeout(() => {
             runInAction(() => {
-                this.availableCars = response.data;
-            });
-
-        } catch (e: any) {
-            runInAction(() => {
-                this.error = e.response?.data?.message || "Failed to find cars";
-            });
-        } finally {
-            runInAction(() => {
+                this.availableCars = [
+                    {
+                        id: 'car-1',
+                        make: 'Tesla',
+                        model: 'Model Y',
+                        provider: ProviderType.MYWHEELS,
+                        seats: 4,
+                        fuelType: FuelType.EV,
+                        luggageCapacity: 1,
+                        range: 450,
+                        pricePerHourEstimate: 18,
+                        rating: 4.8,
+                        location: { latitude: 52.3676, longitude: 4.9041, address: 'Amsterdam Centrum' }
+                    } as CarDTO,
+                    {
+                        id: 'car-2',
+                        make: 'BMW',
+                        model: 'iX',
+                        provider: ProviderType.GREENWHEELS,
+                        seats: 5,
+                        fuelType: FuelType.EV,
+                        luggageCapacity: 2,
+                        range: 520,
+                        pricePerHourEstimate: 24,
+                        rating: 4.9,
+                        location: { latitude: 52.3650, longitude: 4.9000, address: 'Amsterdam Zuid' }
+                    } as CarDTO,
+                    {
+                        id: 'car-3',
+                        make: 'Polestar',
+                        model: '2',
+                        provider: ProviderType.MYWHEELS,
+                        seats: 4,
+                        fuelType: FuelType.EV,
+                        luggageCapacity: 1,
+                        range: 400,
+                        pricePerHourEstimate: 16,
+                        rating: 4.7,
+                        location: { latitude: 52.3700, longitude: 4.9100, address: 'Amsterdam Oost' }
+                    } as CarDTO
+                ];
                 this.isLoading = false;
             });
-        }
+        }, 800);
     }
 
     selectCar(car: CarDTO) {
@@ -198,7 +211,8 @@ export class BookingViewModel {
                 },
                 startTime: this.dateTime,
                 totalPrice: this.selectedCar.pricePerHourEstimate * 2,
-                note: this.bookingNote
+                note: this.bookingNote,
+                status: BookingStatus.CONFIRMED
             };
 
             await api.post('/bookings', bookingPayload);

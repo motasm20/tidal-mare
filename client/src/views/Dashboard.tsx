@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import api from '../services/ApiService';
 import type { BookingDTO } from '../models';
+import { SustainabilityStats } from '../components/SustainabilityStats';
+import { authViewModel } from '../viewmodels';
 // @ts-ignore - Component exists but TS might not see it immediately in this environment
 import { BookingCard } from '../components/BookingCard';
 
@@ -42,6 +44,13 @@ export const Dashboard: React.FC = observer(() => {
                     </Link>
                 </div>
             </div>
+
+            {/* Sustainability Stats */}
+            <SustainabilityStats
+                co2Saved={authViewModel.sustainabilityStats.co2Saved}
+                treesPlanted={authViewModel.sustainabilityStats.treesPlanted}
+                distance={authViewModel.sustainabilityStats.distance}
+            />
 
             {/* Upcoming Bookings Section */}
             <section style={{ marginBottom: '3rem' }}>
