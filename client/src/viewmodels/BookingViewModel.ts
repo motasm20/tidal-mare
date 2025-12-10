@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { BookingStatus, ProviderType, FuelType } from '../models';
 import type { CarDTO } from '../models';
 import { BookingService } from '../services/BookingService';
+import { auth } from '../config/firebase'; // Direct access to auth for ID
 import type { AddressSuggestion } from '../services/AddressSuggestionService';
 
 export class BookingViewModel {
@@ -194,10 +195,16 @@ export class BookingViewModel {
     async confirmBooking() {
         if (!this.selectedCar || !this.isStartAddressValid || !this.isEndAddressValid) return;
 
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+            runInAction(() => { this.error = "Je moet ingelogd zijn om te boeken."; });
+            return;
+        }
+
         this.isLoading = true;
         try {
             const bookingPayload = {
-                userId: '1', // TODO: Get actual user ID from AuthViewModel
+                userId: currentUser.uid,
                 carId: this.selectedCar.id,
                 startLocation: {
                     address: `${this.startStreet} ${this.startHouseNumber}, ${this.startCity}`,
@@ -212,7 +219,7 @@ export class BookingViewModel {
                 startTime: this.dateTime,
                 totalPrice: this.selectedCar.pricePerHourEstimate * 2,
                 note: this.bookingNote,
-                status: BookingStatus.REQUESTED // Changed to REQUESTED for realism
+                status: BookingStatus.REQUESTED
             };
 
             await BookingService.createBooking(bookingPayload as any);
