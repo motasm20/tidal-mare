@@ -4,7 +4,9 @@ import {
     signOut,
     onAuthStateChanged,
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    sendPasswordResetEmail,
+    signInAnonymously
 } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { auth } from "../config/firebase";
@@ -26,11 +28,22 @@ export class AuthService {
         return userCredential.user;
     }
 
+    static async loginAnonymously(): Promise<User> {
+        const userCredential = await signInAnonymously(auth);
+        const token = await userCredential.user.getIdToken();
+        StorageService.setToken(token);
+        return userCredential.user;
+    }
+
     static async register(email: string, password: string): Promise<User> {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const token = await userCredential.user.getIdToken();
         StorageService.setToken(token);
         return userCredential.user;
+    }
+
+    static async resetPassword(email: string): Promise<void> {
+        await sendPasswordResetEmail(auth, email);
     }
 
     static async logout(): Promise<void> {
