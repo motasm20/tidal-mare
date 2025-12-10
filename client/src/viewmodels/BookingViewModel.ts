@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import { BookingStatus, ProviderType, FuelType } from '../models';
-import type { CarDTO, LocationDTO } from '../models';
+import type { CarDTO } from '../models';
 import api from '../services/ApiService';
 import type { AddressSuggestion } from '../services/AddressSuggestionService';
 
