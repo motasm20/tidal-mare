@@ -15,7 +15,7 @@ import { Navbar } from './views/components/Navbar';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/tidal-mare">
       <div className="app-shell">
         <Navbar />
         <main className="app-content">
