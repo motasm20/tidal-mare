@@ -145,18 +145,45 @@ export class AuthViewModel {
     }
 
     private checkAuth(): void {
-        AuthService.onAuthStateChanged((user) => {
-            runInAction(() => {
-                if (user) {
-                    this.user = {
-                        id: user.uid,
-                        email: user.email || '',
-                        role: 'customer'
-                    };
-                } else {
-                    this.user = null;
+        AuthService.onAuthStateChanged(async (user) => {
+            if (user) {
+                // If anonymous, generic guest role
+                if (user.isAnonymous) {
+                    runInAction(() => {
+                        this.user = {
+                            id: user.uid,
+                            email: 'guest@tidalmare.com',
+                            role: 'guest'
+                        };
+                    });
+                    return;
                 }
-            });
+
+                // If logged in, fetch their profile for the REAL role
+                try {
+                    const profile = await AuthService.getUserProfile(user.uid);
+                    runInAction(() => {
+                        this.user = {
+                            id: user.uid,
+                            email: user.email || '',
+                            role: profile?.role || 'customer' // Fallback to customer
+                        };
+                    });
+                } catch (e) {
+                    // Fallback if fetch fails
+                    runInAction(() => {
+                        this.user = {
+                            id: user.uid,
+                            email: user.email || '',
+                            role: 'customer'
+                        };
+                    });
+                }
+            } else {
+                runInAction(() => {
+                    this.user = null;
+                });
+            }
         });
     }
 }
