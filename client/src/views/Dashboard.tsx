@@ -41,11 +41,40 @@ export const Dashboard: React.FC = observer(() => {
                     <Link to="/request" className="btn-primary">
                         + Nieuwe Rit
                     </Link>
-                    <Link to="/profile" className="logout-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
-                        Mijn Profiel
-                    </Link>
+                    {authViewModel.user?.role !== 'guest' ? (
+                        <Link to="/profile" className="logout-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+                            Mijn Profiel
+                        </Link>
+                    ) : (
+                        <Link to="/register" className="btn-primary" style={{ background: '#f59e0b', border: 'none' }}>
+                            Account Aanmaken
+                        </Link>
+                    )}
                 </div>
             </div>
+
+            {/* Guest Banner */}
+            {authViewModel.user?.role === 'guest' && (
+                <div style={{
+                    background: '#fffbeb',
+                    border: '1px solid #fcd34d',
+                    color: '#92400e',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    marginBottom: '2rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                }}>
+                    <span style={{ fontSize: '1.5rem' }}>👋</span>
+                    <div>
+                        <strong>Welkom als gast!</strong>
+                        <p style={{ margin: 0, fontSize: '0.95rem', opacity: 0.9 }}>
+                            Je kunt rondkijken en ritten zoeken, maar om daadwerkelijk te boeken moet je een account aanmaken.
+                        </p>
+                    </div>
+                </div>
+            )}
 
             {/* Sustainability Stats */}
             <SustainabilityStats

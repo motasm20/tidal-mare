@@ -137,6 +137,17 @@ export const RequestCarPage: React.FC = observer(() => {
     // Responsive helper
     const isMobile = window.innerWidth <= 768;
 
+    const handleConfirmBooking = () => {
+        if (user?.role === 'guest') {
+            // Redirect guests to register
+            if (confirm("Als gast kun je niet boeken. Wil je een account aanmaken?")) {
+                window.location.href = '#/register'; // Using hash router or regular link
+            }
+            return;
+        }
+        bookingVM.confirmBooking();
+    };
+
     return (
         <div style={{ minHeight: '100vh', position: 'relative', background: '#111827', paddingBottom: '3rem', overflowX: 'hidden' }}>
             <AnimatedBackground />
@@ -399,7 +410,7 @@ export const RequestCarPage: React.FC = observer(() => {
                                     center={[52.3676, 4.9041]} // Mock center (Amsterdam) as we don't have accurate lat/lng in VM yet
                                     onSelectCar={(car) => {
                                         bookingVM.selectCar(car);
-                                        bookingVM.confirmBooking();
+                                        handleConfirmBooking();
                                     }}
                                 />
                                 <p style={{ marginTop: '1rem', color: '#6b7280', fontSize: '0.85rem', textAlign: 'center' }}>
@@ -431,7 +442,7 @@ export const RequestCarPage: React.FC = observer(() => {
                                                 <button
                                                     onClick={() => {
                                                         bookingVM.selectCar(car);
-                                                        bookingVM.confirmBooking();
+                                                        handleConfirmBooking();
                                                     }}
                                                     className="btn-primary"
                                                     style={{ background: '#111827', boxShadow: '0 4px 6px rgba(0,0,0,0.2)' }}
