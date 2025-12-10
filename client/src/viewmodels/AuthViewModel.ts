@@ -88,7 +88,9 @@ export class AuthViewModel {
             });
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.message || 'Anonymous login failed';
+                console.error("Guest login error:", e);
+                // Show exact code for debugging
+                this.error = `Error (${e.code}): ${e.message}`;
             });
         } finally {
             runInAction(() => {

@@ -26,7 +26,7 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
 
               {/* Customer Routes */}
-              <Route element={<PrivateRoute roles={['customer', 'admin']} />}>
+              <Route element={<PrivateRoute roles={['customer', 'admin', 'guest']} />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/request" element={<RequestCarPage />} />
                 <Route path="/booking/:id" element={<BookingDetailsPage />} />
