@@ -30,6 +30,12 @@ export const Navbar: React.FC = observer(() => {
                                 <NavLink to="/profile" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>Profiel</NavLink>
                             </>
                         )}
+                        {isAuthenticated && user?.role === 'guest' && (
+                            <>
+                                <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>Home</NavLink>
+                                <NavLink to="/request" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>Reis aanvragen</NavLink>
+                            </>
+                        )}
                         {isAuthenticated && user?.role === 'admin' && (
                             <>
                                 <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>Dashboard</NavLink>
