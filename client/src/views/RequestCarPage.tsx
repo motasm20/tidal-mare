@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { BookingViewModel } from '../viewmodels/BookingViewModel';
 import { authViewModel } from '../viewmodels';
@@ -12,6 +13,7 @@ const bookingVM = new BookingViewModel();
 
 export const RequestCarPage: React.FC = observer(() => {
     const { user } = authViewModel;
+    const navigate = useNavigate();
     const [isMapView, setIsMapView] = React.useState(true); // Default to Map View
 
     const playSuccessSound = () => {
