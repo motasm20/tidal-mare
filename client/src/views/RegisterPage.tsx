@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { authViewModel } from '../viewmodels';
 import { useNavigate, Link } from 'react-router-dom';
-import { EnvelopeIcon, LockClosedIcon } from '../components/Icons';
+// @ts-ignore
+import googleLogo from '../assets/google-logo.png';
+import { EnvelopeIcon, LockClosedIcon, UserIcon } from '../components/Icons';
 
 const authVM = authViewModel;
 
@@ -19,6 +21,16 @@ export const RegisterPage: React.FC = observer(() => {
         }
     };
 
+    const handleGoogleLogin = async () => {
+        await authVM.loginWithGoogle();
+        if (authVM.isAuthenticated) navigate('/dashboard');
+    };
+
+    const handleGuestLogin = async () => {
+        await authVM.loginAnonymously();
+        if (authVM.isAuthenticated) navigate('/dashboard');
+    };
+
     return (
         <div className="auth-background">
             <div className="auth-card">
@@ -26,45 +38,6 @@ export const RegisterPage: React.FC = observer(() => {
                 <p className="auth-subtitle">Begin vandaag nog met jouw duurzame reis</p>
 
                 {authVM.error && <p className="error-message mb-4">{authVM.error}</p>}
-
-                <button
-                    onClick={() => authVM.loginWithGoogle().then(() => { if (authVM.isAuthenticated) navigate('/dashboard') })}
-                    className="google-btn w-full mb-3"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '10px',
-                        padding: '12px',
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        fontSize: '1rem'
-                    }}
-                >
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '18px', height: '18px' }} />
-                    Registreren met Google
-                </button>
-
-                <button
-                    onClick={() => authVM.loginAnonymously().then(() => { if (authVM.isAuthenticated) navigate('/dashboard') })}
-                    className="guest-btn w-full mb-4"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '10px',
-                        padding: '10px',
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        fontSize: '0.9rem'
-                    }}
-                >
-                    👤 Doorgaan als gast
-                </button>
-
-                <div className="divider">
-                    <span>of met email</span>
-                </div>
 
                 <form onSubmit={handleRegister}>
                     <div className="form-group">
@@ -99,6 +72,57 @@ export const RegisterPage: React.FC = observer(() => {
                         {authVM.isLoading ? 'Bezig met registreren...' : 'Registreren'}
                     </button>
                 </form>
+
+                <div className="divider" style={{ display: 'flex', alignItems: 'center', margin: '2rem 0', color: '#666' }}>
+                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
+                    <span style={{ padding: '0 10px', fontSize: '0.9rem', color: '#94a3b8' }}>of registreer met</span>
+                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
+                </div>
+
+                <div className="social-login-buttons" style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                    <button
+                        onClick={handleGoogleLogin}
+                        className="social-btn-round"
+                        title="Registreren met Google"
+                        style={{
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            border: '1px solid #e2e8f0',
+                            background: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                        }}
+                    >
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '24px', height: '24px' }} />
+                    </button>
+
+                    <button
+                        onClick={handleGuestLogin}
+                        className="social-btn-round"
+                        title="Doorgaan als gast"
+                        style={{
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            border: '1px solid #e2e8f0',
+                            background: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                        }}
+                    >
+                        <UserIcon style={{ width: '24px', height: '24px', color: '#555', stroke: '#555', strokeWidth: '1.5' }} />
+                    </button>
+                </div>
+
                 <div className="mt-4 text-center" style={{ marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--slate-500)' }}>
                     Heb je al een account? <Link to="/login" style={{ fontWeight: 600 }}>Log in</Link>
                 </div>
