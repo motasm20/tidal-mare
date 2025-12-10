@@ -1,9 +1,10 @@
-import {
-    createUserWithEmailAndPassword,
+createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    type User // Type-only import
+    type User, // Type-only import
+        GoogleAuthProvider,
+        signInWithPopup
 } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { StorageService } from "./StorageService";
@@ -13,6 +14,14 @@ export class AuthService {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const token = await userCredential.user.getIdToken();
         StorageService.setToken(token); // Keep using StorageService for now if other things rely on it
+        return userCredential.user;
+    }
+
+    static async loginWithGoogle(): Promise<User> {
+        const provider = new GoogleAuthProvider();
+        const userCredential = await signInWithPopup(auth, provider);
+        const token = await userCredential.user.getIdToken();
+        StorageService.setToken(token);
         return userCredential.user;
     }
 

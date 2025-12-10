@@ -23,6 +23,34 @@ export const LoginPage: React.FC = observer(() => {
             <div className="auth-card">
                 <h2 className="auth-title">Inloggen</h2>
                 {authVM.error && <p className="error-message mb-4">{authVM.error}</p>}
+
+                <button
+                    onClick={() => authVM.loginWithGoogle().then(() => { if (authVM.isAuthenticated) navigate('/dashboard') })}
+                    className="google-btn w-full mb-4"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '10px',
+                        background: '#fff',
+                        color: '#333',
+                        border: '1px solid #ccc',
+                        padding: '10px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontWeight: 500
+                    }}
+                >
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '18px', height: '18px' }} />
+                    Inloggen met Google
+                </button>
+
+                <div className="divider" style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: '#666' }}>
+                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
+                    <span style={{ padding: '0 10px', fontSize: '0.9rem' }}>of</span>
+                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
+                </div>
+
                 <form onSubmit={handleLogin}>
                     <div className="form-field">
                         <label className="form-label">Email</label>

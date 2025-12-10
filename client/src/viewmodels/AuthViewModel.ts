@@ -51,6 +51,29 @@ export class AuthViewModel {
         }
     }
 
+    async loginWithGoogle(): Promise<void> {
+        this.isLoading = true;
+        this.error = null;
+        try {
+            const user = await AuthService.loginWithGoogle();
+            runInAction(() => {
+                this.user = {
+                    id: user.uid,
+                    email: user.email || '',
+                    role: 'customer'
+                };
+            });
+        } catch (e: any) {
+            runInAction(() => {
+                this.error = e.message || 'Google login failed';
+            });
+        } finally {
+            runInAction(() => {
+                this.isLoading = false;
+            });
+        }
+    }
+
     async register(email: string, password: string): Promise<void> {
         this.isLoading = true;
         this.error = null;
