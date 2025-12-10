@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { authViewModel } from '../viewmodels';
 import { useNavigate, Link } from 'react-router-dom';
+import { EnvelopeIcon, LockClosedIcon } from '../components/Icons';
 
 const authVM = authViewModel;
 
@@ -19,9 +20,11 @@ export const RegisterPage: React.FC = observer(() => {
     };
 
     return (
-        <div className="auth-page">
+        <div className="auth-background">
             <div className="auth-card">
-                <h2 className="auth-title">Registreren</h2>
+                <h2 className="auth-title">Maak een account</h2>
+                <p className="auth-subtitle">Begin vandaag nog met jouw duurzame reis</p>
+
                 {authVM.error && <p className="error-message mb-4">{authVM.error}</p>}
 
                 <button
@@ -31,18 +34,11 @@ export const RegisterPage: React.FC = observer(() => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '12px',
-                        background: '#ffffff',
-                        color: '#3c4043',
-                        border: '1px solid #dadce0',
+                        gap: '10px',
                         padding: '12px',
-                        borderRadius: '4px',
+                        borderRadius: '12px',
                         cursor: 'pointer',
-                        fontWeight: 500,
-                        fontSize: '14px',
-                        fontFamily: 'Roboto, arial, sans-serif',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                        transition: 'background-color .2s box-shadow .2s'
+                        fontSize: '1rem'
                     }}
                 >
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '18px', height: '18px' }} />
@@ -57,53 +53,54 @@ export const RegisterPage: React.FC = observer(() => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '10px',
-                        background: '#f8f9fa',
-                        color: '#666',
-                        border: '1px solid #ccc',
                         padding: '10px',
-                        borderRadius: '4px',
+                        borderRadius: '12px',
                         cursor: 'pointer',
-                        fontSize: '14px'
+                        fontSize: '0.9rem'
                     }}
                 >
                     👤 Doorgaan als gast
                 </button>
 
-                <div className="divider" style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: '#666' }}>
-                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
-                    <span style={{ padding: '0 10px', fontSize: '0.9rem' }}>of met email</span>
-                    <span style={{ flex: 1, height: '1px', background: '#eee' }}></span>
+                <div className="divider">
+                    <span>of met email</span>
                 </div>
 
                 <form onSubmit={handleRegister}>
-                    <div className="form-field">
+                    <div className="form-group">
                         <label className="form-label">Email</label>
-                        <input
-                            type="email"
-                            className="form-input"
-                            placeholder="naam@voorbeeld.nl"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            required
-                        />
+                        <div className="input-group">
+                            <EnvelopeIcon className="input-icon" />
+                            <input
+                                type="email"
+                                className="form-input input-with-icon"
+                                placeholder="naam@voorbeeld.nl"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
                     </div>
-                    <div className="form-field">
+                    <div className="form-group">
                         <label className="form-label">Wachtwoord</label>
-                        <input
-                            type="password"
-                            className="form-input"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="input-group">
+                            <LockClosedIcon className="input-icon" />
+                            <input
+                                type="password"
+                                className="form-input input-with-icon"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
                     </div>
-                    <button type="submit" className="btn-primary w-full mt-4" disabled={authVM.isLoading} style={{ width: '100%' }}>
+                    <button type="submit" className="btn-primary w-full mt-4" disabled={authVM.isLoading} style={{ width: '100%', padding: '12px' }}>
                         {authVM.isLoading ? 'Bezig met registreren...' : 'Registreren'}
                     </button>
                 </form>
-                <div className="mt-4 text-center" style={{ marginTop: '1.5rem', fontSize: '0.9rem' }}>
-                    Heb je al een account? <Link to="/">Log in</Link>
+                <div className="mt-4 text-center" style={{ marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--slate-500)' }}>
+                    Heb je al een account? <Link to="/login" style={{ fontWeight: 600 }}>Log in</Link>
                 </div>
             </div>
         </div>

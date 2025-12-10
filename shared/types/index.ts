@@ -30,7 +30,7 @@ export interface LocationDTO {
 export interface UserDTO {
     id: string;
     email: string;
-    role: 'customer' | 'admin';
+    role: 'customer' | 'admin' | 'guest';
     homeLocation?: LocationDTO;
     workLocation?: LocationDTO;
 }

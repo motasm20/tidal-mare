@@ -74,6 +74,29 @@ export class AuthViewModel {
         }
     }
 
+    async loginAnonymously(): Promise<void> {
+        this.isLoading = true;
+        this.error = null;
+        try {
+            const user = await AuthService.loginAnonymously();
+            runInAction(() => {
+                this.user = {
+                    id: user.uid,
+                    email: 'guest@tidalmare.com', // Mock email for guest
+                    role: 'guest'
+                };
+            });
+        } catch (e: any) {
+            runInAction(() => {
+                this.error = e.message || 'Anonymous login failed';
+            });
+        } finally {
+            runInAction(() => {
+                this.isLoading = false;
+            });
+        }
+    }
+
     async register(email: string, password: string): Promise<void> {
         this.isLoading = true;
         this.error = null;
