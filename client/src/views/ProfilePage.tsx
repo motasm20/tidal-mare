@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { authViewModel, userProfileViewModel } from '../viewmodels';
 import { FormSection } from '../components/FormSection';
+import { AddressAutocomplete } from '../components/AddressAutocomplete';
+import type { LocationDTO } from '../models';
 import {
     UserIcon,
     EnvelopeIcon,
@@ -17,22 +19,22 @@ export const ProfilePage: React.FC = observer(() => {
     const { user } = authViewModel;
     const { isLoading } = userProfileViewModel;
 
-    const [homeAddress, setHomeAddress] = useState('');
-    const [workAddress, setWorkAddress] = useState('');
+    const [homeLocation, setHomeLocation] = useState<LocationDTO | undefined>(undefined);
+    const [workLocation, setWorkLocation] = useState<LocationDTO | undefined>(undefined);
 
     useEffect(() => {
         if (user) {
             userProfileViewModel.setUser(user);
-            if (user.homeLocation) setHomeAddress(user.homeLocation.address);
-            if (user.workLocation) setWorkAddress(user.workLocation.address);
+            if (user.homeLocation) setHomeLocation(user.homeLocation);
+            if (user.workLocation) setWorkLocation(user.workLocation);
         }
     }, [user]);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         await userProfileViewModel.updateLocations(
-            homeAddress ? { address: homeAddress, label: 'Thuis' } : undefined,
-            workAddress ? { address: workAddress, label: 'Werk' } : undefined
+            homeLocation,
+            workLocation
         );
         if (userProfileViewModel.user) {
             authViewModel.user = userProfileViewModel.user;
@@ -113,28 +115,40 @@ export const ProfilePage: React.FC = observer(() => {
                                     <span style={{ color: 'var(--primary-600)' }}><HomeIcon /></span>
                                     <span>Thuisadres</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    className="form-input"
+                                <AddressAutocomplete
+                                    label=""
+                                    value={homeLocation?.address || ''}
+                                    onChange={(val) => setHomeLocation(prev => ({ ...prev, address: val, label: 'Thuis' } as LocationDTO))}
+                                    onSelect={(suggestion) => {
+                                        setHomeLocation({
+                                            address: `${suggestion.street} ${suggestion.houseNumber}, ${suggestion.city}`,
+                                            latitude: suggestion.latitude,
+                                            longitude: suggestion.longitude,
+                                            label: 'Thuis'
+                                        });
+                                    }}
                                     placeholder="Bijv. Kerkstraat 1, Amsterdam"
-                                    value={homeAddress}
-                                    onChange={(e) => setHomeAddress(e.target.value)}
-                                    style={{ transition: 'all 0.2s', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.05)' }}
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group" style={{ marginTop: '1.5rem' }}>
                                 <label className="form-label" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600', color: '#374151' }}>
                                     <span style={{ color: 'var(--primary-600)' }}><BriefcaseIcon /></span>
                                     <span>Werkadres</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    className="form-input"
+                                <AddressAutocomplete
+                                    label=""
+                                    value={workLocation?.address || ''}
+                                    onChange={(val) => setWorkLocation(prev => ({ ...prev, address: val, label: 'Werk' } as LocationDTO))}
+                                    onSelect={(suggestion) => {
+                                        setWorkLocation({
+                                            address: `${suggestion.street} ${suggestion.houseNumber}, ${suggestion.city}`,
+                                            latitude: suggestion.latitude,
+                                            longitude: suggestion.longitude,
+                                            label: 'Werk'
+                                        });
+                                    }}
                                     placeholder="Bijv. Stationsplein 5, Utrecht"
-                                    value={workAddress}
-                                    onChange={(e) => setWorkAddress(e.target.value)}
-                                    style={{ transition: 'all 0.2s', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.05)' }}
                                 />
                             </div>
                         </FormSection>
