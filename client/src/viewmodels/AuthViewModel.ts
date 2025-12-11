@@ -100,9 +100,14 @@ export class AuthViewModel {
         }
     }
 
+    private isRegistering = false;
+
+    // ... (rest of the file until register)
+
     async register(email: string, password: string): Promise<void> {
         this.isLoading = true;
         this.error = null;
+        this.isRegistering = true; // Flag to ignore auth state changes
         try {
             await AuthService.register(email, password);
             // User requested no auto-login. Force logout so they must verify and login manually.
@@ -118,74 +123,20 @@ export class AuthViewModel {
         } finally {
             runInAction(() => {
                 this.isLoading = false;
+                this.isRegistering = false; // Reset flag
             });
         }
     }
 
-    async resendVerificationEmail(): Promise<void> {
-        if (!auth.currentUser) return;
-        this.isLoading = true;
-        try {
-            await AuthService.sendVerificationEmail(auth.currentUser);
-        } catch (e: any) {
-            runInAction(() => {
-                this.error = e.message || 'Failed to resend verification email';
-            });
-        } finally {
-            runInAction(() => {
-                this.isLoading = false;
-            });
-        }
-    }
-
-    async resetPassword(email: string): Promise<void> {
-        this.isLoading = true;
-        this.error = null;
-        try {
-            await AuthService.resetPassword(email);
-        } catch (e: any) {
-            runInAction(() => {
-                this.error = e.message || 'Reset password failed';
-            });
-            throw e;
-        } finally {
-            runInAction(() => {
-                this.isLoading = false;
-            });
-        }
-    }
-
-    logout(): void {
-        AuthService.logout();
-        this.user = null;
-    }
-
-    async deleteAccount(): Promise<void> {
-        this.isLoading = true;
-        this.error = null;
-        try {
-            await AuthService.deleteAccount();
-            runInAction(() => {
-                this.user = null;
-            });
-        } catch (e: any) {
-            runInAction(() => {
-                if (e.code === 'auth/requires-recent-login') {
-                    this.error = 'Login opnieuw in om je account te verwijderen.';
-                } else {
-                    this.error = e.message || 'Kon account niet verwijderen';
-                }
-            });
-            throw e;
-        } finally {
-            runInAction(() => {
-                this.isLoading = false;
-            });
-        }
-    }
+    // ... (rest of methods)
 
     private checkAuth(): void {
         AuthService.onAuthStateChanged(async (user) => {
+            // IF we are currently in the registration flow, IGNORE this update.
+            // This prevents the UI from momentarily thinking the user is logged in
+            // before the subsequent logout() call completes.
+            if (this.isRegistering) return;
+
             if (user) {
                 // If anonymous, generic guest role
                 if (user.isAnonymous) {
