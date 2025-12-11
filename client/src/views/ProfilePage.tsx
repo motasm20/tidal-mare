@@ -56,7 +56,7 @@ export const ProfilePage: React.FC = observer(() => {
         e.preventDefault();
 
         // Construct the update object based on our UserDTO
-        const updates = {
+        const updates: any = {
             firstName,
             lastName,
             phoneNumber,
@@ -65,10 +65,12 @@ export const ProfilePage: React.FC = observer(() => {
             licenseExpiryDate,
             emergencyContactName,
             emergencyContactPhone,
-            iban,
-            homeLocation,
-            workLocation
+            iban
         };
+
+        // Only include locations if they are defined to avoid Firestore 'undefined' errors
+        if (homeLocation) updates.homeLocation = homeLocation;
+        if (workLocation) updates.workLocation = workLocation;
 
         // We use the same updateLocations method but now pass all fields. 
         // We need to slightly patch UserProfileViewModel to accept generic partials if it doesn't already.
