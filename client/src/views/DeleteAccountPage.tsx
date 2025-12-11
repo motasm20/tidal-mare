@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { authViewModel } from '../viewmodels';
 import { useNavigate } from 'react-router-dom';
@@ -8,22 +8,51 @@ import { Modal } from '../components/Modal';
 export const DeleteAccountPage: React.FC = observer(() => {
     const navigate = useNavigate();
     const { isLoading, error } = authViewModel;
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleDelete = async () => {
-        if (window.confirm('Weet je zeker dat je je account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.')) {
-            try {
-                await authViewModel.deleteAccount();
-                navigate('/register');
-                alert('Je account is verwijderd.');
-            } catch (e) {
-                // Error handled in VM / UI display
-            }
+    const handleDeleteClick = () => {
+        setIsModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        try {
+            await authViewModel.deleteAccount();
+            navigate('/register');
+        } catch (e) {
+            // Error handling is managed by the ViewModel and displayed in the UI
+            setIsModalOpen(false);
         }
     };
 
     return (
         <div style={{ minHeight: '100vh', position: 'relative', background: '#111827', padding: '2rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <AnimatedBackground />
+
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title="Weet je het zeker?"
+                footer={
+                    <>
+                        <button
+                            onClick={() => setIsModalOpen(false)}
+                            style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: '#f3f4f6', border: 'none', fontWeight: '600', cursor: 'pointer', color: '#374151' }}
+                        >
+                            Annuleren
+                        </button>
+                        <button
+                            onClick={confirmDelete}
+                            style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: '#dc2626', border: 'none', fontWeight: '600', cursor: 'pointer', color: 'white' }}
+                        >
+                            Ja, verwijder alles
+                        </button>
+                    </>
+                }
+            >
+                <p>
+                    Dit is definitief. Al je gegevens worden direct gewist en de actie kan niet ongedaan worden gemaakt.
+                </p>
+            </Modal>
 
             <div style={{
                 background: 'rgba(255, 255, 255, 0.95)',
@@ -44,12 +73,12 @@ export const DeleteAccountPage: React.FC = observer(() => {
                     Je staat op het punt om je account permanent te verwijderen.
                     <br /><br />
                     <strong>Wat gebeurt er?</strong>
-                    <ul style={{ textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem' }}>
-                        <li>• Je profiel en privégegevens worden gewist.</li>
-                        <li>• Je kunt niet meer inloggen.</li>
-                        <li>• Je rithistorie wordt <span style={{ color: '#059669', fontWeight: 600 }}>geanonimiseerd bewaard</span> voor statistieken.</li>
-                    </ul>
                 </p>
+                <ul style={{ textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem', color: '#4b5563', paddingLeft: '1.5rem' }}>
+                    <li>• Je profiel en privégegevens worden gewist.</li>
+                    <li>• Je kunt niet meer inloggen.</li>
+                    <li>• Je rithistorie wordt <span style={{ color: '#059669', fontWeight: 600 }}>geanonimiseerd bewaard</span> voor statistieken.</li>
+                </ul>
 
                 {error && (
                     <div style={{ background: '#fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
@@ -59,7 +88,7 @@ export const DeleteAccountPage: React.FC = observer(() => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <button
-                        onClick={handleDelete}
+                        onClick={handleDeleteClick}
                         disabled={isLoading}
                         style={{
                             background: '#dc2626',
