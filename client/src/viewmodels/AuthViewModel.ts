@@ -104,13 +104,11 @@ export class AuthViewModel {
         this.isLoading = true;
         this.error = null;
         try {
-            const user = await AuthService.register(email, password);
+            await AuthService.register(email, password);
+            // User requested no auto-login. Force logout so they must verify and login manually.
+            await AuthService.logout();
             runInAction(() => {
-                this.user = {
-                    id: user.uid,
-                    email: user.email || '',
-                    role: 'customer'
-                };
+                this.user = null;
             });
         } catch (e: any) {
             runInAction(() => {
