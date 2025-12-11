@@ -13,6 +13,7 @@ import {
     MapPinIcon
 } from '../components/Icons';
 import { AnimatedBackground } from '../components/AnimatedBackground';
+import { Toast } from '../components/Toast';
 import { Link } from 'react-router-dom';
 
 export const ProfilePage: React.FC = observer(() => {
@@ -99,6 +100,13 @@ export const ProfilePage: React.FC = observer(() => {
     return (
         <div style={{ minHeight: '100vh', position: 'relative', background: '#111827', padding: '2rem 1rem' }}>
             <AnimatedBackground />
+
+            {showToast && (
+                <Toast
+                    message="Updates succesvol opgeslagen!"
+                    onClose={() => setShowToast(false)}
+                />
+            )}
 
             {/* Nav Back */}
             <div style={{ maxWidth: '800px', margin: '0 auto 2rem auto', position: 'relative', zIndex: 10 }}>

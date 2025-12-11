@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { authViewModel } from '../viewmodels';
 import { useNavigate } from 'react-router-dom';
 import { AnimatedBackground } from '../components/AnimatedBackground';
+import { Modal } from '../components/Modal';
 
 export const DeleteAccountPage: React.FC = observer(() => {
     const navigate = useNavigate();
