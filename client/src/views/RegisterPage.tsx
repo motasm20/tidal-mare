@@ -10,13 +10,15 @@ const authVM = authViewModel;
 export const RegisterPage: React.FC = observer(() => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [verificationSent, setVerificationSent] = useState(false);
     const navigate = useNavigate();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         await authVM.register(email, password);
-        if (authVM.isAuthenticated) {
-            navigate('/dashboard');
+        // After register, if no error, we show verification screen
+        if (!authVM.error) {
+            setVerificationSent(true);
         }
     };
 
@@ -29,6 +31,43 @@ export const RegisterPage: React.FC = observer(() => {
         await authVM.loginAnonymously();
         if (authVM.isAuthenticated) navigate('/dashboard');
     };
+
+    if (verificationSent) {
+        return (
+            <div className="auth-background">
+                <div className="auth-card" style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📧</div>
+                    <h2 className="auth-title">Controleer je e-mail</h2>
+                    <p className="auth-subtitle">
+                        We hebben een verificatielink gestuurd naar <strong>{email}</strong>.
+                        Klik op de link in de e-mail om je account te activeren.
+                    </p>
+
+                    <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <button
+                            onClick={() => window.open('https://gmail.com', '_blank')}
+                            className="btn-primary"
+                            style={{ width: '100%', padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                        >
+                            Open Email App <EnvelopeIcon className="w-5 h-5" />
+                        </button>
+
+                        <button
+                            onClick={() => navigate('/login')}
+                            className="btn-secondary"
+                            style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid #e2e8f0' }}
+                        >
+                            Terug naar inloggen
+                        </button>
+                    </div>
+
+                    <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#64748b' }}>
+                        Geen e-mail ontvangen? <button onClick={() => authVM.resendVerificationEmail()} style={{ color: 'var(--primary-600)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>Stuur opnieuw</button>
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="auth-background">

@@ -6,7 +6,8 @@ import {
     GoogleAuthProvider,
     signInWithPopup,
     sendPasswordResetEmail,
-    signInAnonymously
+    signInAnonymously,
+    sendEmailVerification
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import type { User } from "firebase/auth";
@@ -52,7 +53,14 @@ export class AuthService {
         // Create user document
         await this.createUserDocument(user);
 
+        // Send verification email
+        await this.sendVerificationEmail(user);
+
         return user;
+    }
+
+    static async sendVerificationEmail(user: User): Promise<void> {
+        await sendEmailVerification(user);
     }
 
     static async resetPassword(email: string): Promise<void> {

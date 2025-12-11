@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import type { UserDTO } from '../models';
 import { AuthService } from '../services/AuthService';
+import { auth } from '../config/firebase';
 
 export class AuthViewModel {
     user: UserDTO | null = null;
@@ -114,6 +115,23 @@ export class AuthViewModel {
         } catch (e: any) {
             runInAction(() => {
                 this.error = e.message || 'Registration failed';
+            });
+            throw e; // Re-throw so UI knows to switch to verification view
+        } finally {
+            runInAction(() => {
+                this.isLoading = false;
+            });
+        }
+    }
+
+    async resendVerificationEmail(): Promise<void> {
+        if (!auth.currentUser) return;
+        this.isLoading = true;
+        try {
+            await AuthService.sendVerificationEmail(auth.currentUser);
+        } catch (e: any) {
+            runInAction(() => {
+                this.error = e.message || 'Failed to resend verification email';
             });
         } finally {
             runInAction(() => {
