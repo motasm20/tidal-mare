@@ -17,7 +17,7 @@ export const DeleteAccountPage: React.FC = observer(() => {
     const confirmDelete = async () => {
         try {
             await authViewModel.deleteAccount();
-            navigate('/register');
+            navigate('/login');
         } catch (e) {
             // Error handling is managed by the ViewModel and displayed in the UI
             setIsModalOpen(false);
