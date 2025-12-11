@@ -19,12 +19,32 @@ export const ProfilePage: React.FC = observer(() => {
     const { user } = authViewModel;
     const { isLoading } = userProfileViewModel;
 
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [licenseNumber, setLicenseNumber] = useState('');
+    const [licenseExpiryDate, setLicenseExpiryDate] = useState('');
+    const [emergencyContactName, setEmergencyContactName] = useState('');
+    const [emergencyContactPhone, setEmergencyContactPhone] = useState('');
+    const [iban, setIban] = useState('');
+
     const [homeLocation, setHomeLocation] = useState<LocationDTO | undefined>(undefined);
     const [workLocation, setWorkLocation] = useState<LocationDTO | undefined>(undefined);
 
     useEffect(() => {
         if (user) {
             userProfileViewModel.setUser(user);
+            if (user.firstName) setFirstName(user.firstName);
+            if (user.lastName) setLastName(user.lastName);
+            if (user.phoneNumber) setPhoneNumber(user.phoneNumber);
+            if (user.dateOfBirth) setDateOfBirth(user.dateOfBirth);
+            if (user.licenseNumber) setLicenseNumber(user.licenseNumber);
+            if (user.licenseExpiryDate) setLicenseExpiryDate(user.licenseExpiryDate);
+            if (user.emergencyContactName) setEmergencyContactName(user.emergencyContactName);
+            if (user.emergencyContactPhone) setEmergencyContactPhone(user.emergencyContactPhone);
+            if (user.iban) setIban(user.iban);
+
             if (user.homeLocation) setHomeLocation(user.homeLocation);
             if (user.workLocation) setWorkLocation(user.workLocation);
         }
@@ -32,15 +52,33 @@ export const ProfilePage: React.FC = observer(() => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        await userProfileViewModel.updateLocations(
+
+        // Construct the update object based on our UserDTO
+        const updates = {
+            firstName,
+            lastName,
+            phoneNumber,
+            dateOfBirth,
+            licenseNumber,
+            licenseExpiryDate,
+            emergencyContactName,
+            emergencyContactPhone,
+            iban,
             homeLocation,
             workLocation
-        );
+        };
+
+        // We use the same updateLocations method but now pass all fields. 
+        // We need to slightly patch UserProfileViewModel to accept generic partials if it doesn't already.
+        // Or simply cast it here if we know the underlying service handles it.
+        // Actually best practice is to update the VM method Signature.
+        await userProfileViewModel.updateProfile(updates);
+
         if (userProfileViewModel.user) {
             authViewModel.user = userProfileViewModel.user;
         }
         // Ideally show a toast here, using alert for MVP
-        alert('Locaties opgeslagen!');
+        alert('Updates succesvol opgeslagen! ✅');
     };
 
     if (!user) return <div className="p-8 text-center text-gray-500">Niet ingelogd.</div>;
@@ -105,6 +143,62 @@ export const ProfilePage: React.FC = observer(() => {
                                 </div>
                                 <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginTop: '0.5rem', fontStyle: 'italic' }}>Je e-mailadres is gekoppeld aan je account en kan niet worden gewijzigd.</p>
                             </div>
+                            <div className="grid-2-cols">
+                                <div className="form-group">
+                                    <label className="form-label">Voornaam</label>
+                                    <input type="text" className="form-input" placeholder="Je voornaam" value={firstName} onChange={e => setFirstName(e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Achternaam</label>
+                                    <input type="text" className="form-input" placeholder="Je achternaam" value={lastName} onChange={e => setLastName(e.target.value)} />
+                                </div>
+                            </div>
+
+                            <div className="grid-2-cols" style={{ marginTop: '1rem' }}>
+                                <div className="form-group">
+                                    <label className="form-label">Geboortedatum</label>
+                                    <input type="date" className="form-input" value={dateOfBirth} onChange={e => setDateOfBirth(e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Telefoonnummer</label>
+                                    <input type="tel" className="form-input" placeholder="06 12345678" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
+                                </div>
+                            </div>
+
+                            <div className="form-group" style={{ marginTop: '1rem' }}>
+                                <label className="form-label">IBAN (voor betalingen)</label>
+                                <input type="text" className="form-input" placeholder="NL00 RABO 0123 4567 89" value={iban} onChange={e => setIban(e.target.value)} />
+                            </div>
+                        </FormSection>
+
+                        <div style={{ height: '1px', background: '#f3f4f6', margin: '2rem 0' }}></div>
+
+                        <FormSection title="Rijbewijs" icon={<div style={{ fontSize: '1.2rem' }}>🪪</div>}>
+                            <div className="grid-2-cols">
+                                <div className="form-group">
+                                    <label className="form-label">Rijbewijsnummer</label>
+                                    <input type="text" className="form-input" placeholder="1234567890" value={licenseNumber} onChange={e => setLicenseNumber(e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Geldig tot</label>
+                                    <input type="date" className="form-input" value={licenseExpiryDate} onChange={e => setLicenseExpiryDate(e.target.value)} />
+                                </div>
+                            </div>
+                        </FormSection>
+
+                        <div style={{ height: '1px', background: '#f3f4f6', margin: '2rem 0' }}></div>
+
+                        <FormSection title="Noodcontact" icon={<div style={{ fontSize: '1.2rem' }}>🚨</div>}>
+                            <div className="grid-2-cols">
+                                <div className="form-group">
+                                    <label className="form-label">Naam Contactpersoon</label>
+                                    <input type="text" className="form-input" placeholder="Naam" value={emergencyContactName} onChange={e => setEmergencyContactName(e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Telefoonnummer</label>
+                                    <input type="tel" className="form-input" placeholder="06 12345678" value={emergencyContactPhone} onChange={e => setEmergencyContactPhone(e.target.value)} />
+                                </div>
+                            </div>
                         </FormSection>
 
                         <div style={{ height: '1px', background: '#f3f4f6', margin: '2rem 0' }}></div>
@@ -152,6 +246,19 @@ export const ProfilePage: React.FC = observer(() => {
                                 />
                             </div>
                         </FormSection>
+
+                        <style>{`
+                            .grid-2-cols {
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+                                gap: 1.5rem;
+                            }
+                            @media (max-width: 640px) {
+                                .grid-2-cols {
+                                    grid-template-columns: 1fr;
+                                }
+                            }
+                        `}</style>
 
                         <div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
                             <Link to="/dashboard" style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: 'white', border: '1px solid #e5e7eb', color: '#374151', textDecoration: 'none', fontWeight: '600', transition: 'background 0.2s' }}>

@@ -14,24 +14,19 @@ export class UserProfileViewModel {
         this.user = user;
     }
 
-    async updateLocations(homeLocation?: LocationDTO, workLocation?: LocationDTO) {
+    async updateProfile(updates: Partial<UserDTO>) {
         if (!this.user) return;
         this.isLoading = true;
         try {
-            const updates: any = {};
-            if (homeLocation) updates.homeLocation = homeLocation;
-            if (workLocation) updates.workLocation = workLocation;
-
             await AuthService.updateUserProfile(this.user.id, updates);
 
             runInAction(() => {
                 if (this.user) {
-                    if (homeLocation) this.user.homeLocation = homeLocation;
-                    if (workLocation) this.user.workLocation = workLocation;
+                    this.user = { ...this.user, ...updates };
                 }
             });
         } catch (e) {
-            console.error("Failed to update profile locations", e);
+            console.error("Failed to update profile", e);
             throw e;
         } finally {
             runInAction(() => {

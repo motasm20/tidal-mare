@@ -31,6 +31,15 @@ export interface UserDTO {
     id: string;
     email: string;
     role: 'customer' | 'admin' | 'guest';
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+    dateOfBirth?: string; // ISO date
+    licenseNumber?: string;
+    licenseExpiryDate?: string; // ISO date
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    iban?: string;
     homeLocation?: LocationDTO;
     workLocation?: LocationDTO;
 }
