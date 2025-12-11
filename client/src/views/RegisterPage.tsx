@@ -55,7 +55,15 @@ export const RegisterPage: React.FC = observer(() => {
                         <button
                             onClick={() => navigate('/login')}
                             className="btn-secondary"
-                            style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid #e2e8f0' }}
+                            style={{
+                                width: '100%',
+                                padding: '12px',
+                                background: 'white',
+                                border: '1px solid #cbd5e1',
+                                color: '#334155',
+                                fontWeight: '600',
+                                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                            }}
                         >
                             Terug naar inloggen
                         </button>
