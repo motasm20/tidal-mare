@@ -32,6 +32,7 @@ export const ProfilePage: React.FC = observer(() => {
 
     const [homeLocation, setHomeLocation] = useState<LocationDTO | undefined>(undefined);
     const [workLocation, setWorkLocation] = useState<LocationDTO | undefined>(undefined);
+    const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
         if (user) {
