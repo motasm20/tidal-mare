@@ -279,6 +279,16 @@ export const ProfilePage: React.FC = observer(() => {
                             </button>
                         </div>
                     </form>
+
+                    <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid #fee2e2' }}>
+                        <h3 style={{ color: '#991b1b', fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.5rem' }}>Gevarenzone</h3>
+                        <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                            Wil je je account en privégegevens verwijderen?
+                        </p>
+                        <Link to="/delete-account" style={{ color: '#dc2626', fontWeight: '600', fontSize: '0.9rem', textDecoration: 'underline' }}>
+                            Account verwijderen
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
