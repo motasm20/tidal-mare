@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import type { LocationDTO, UserDTO } from '../models';
+import type { UserDTO } from '../models';
 import { AuthService } from '../services/AuthService';
 
 export class UserProfileViewModel {

@@ -79,8 +79,8 @@ export const ProfilePage: React.FC = observer(() => {
         if (userProfileViewModel.user) {
             authViewModel.user = userProfileViewModel.user;
         }
-        // Ideally show a toast here, using alert for MVP
-        alert('Updates succesvol opgeslagen! ✅');
+        // Show custom toast notification
+        setShowToast(true);
     };
 
     if (!user) return <div className="p-8 text-center text-gray-500">Niet ingelogd.</div>;

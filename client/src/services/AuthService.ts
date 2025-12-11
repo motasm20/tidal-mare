@@ -79,6 +79,12 @@ export class AuthService {
         await sendEmailVerification(user);
     }
 
+    static async resendCurrentVerificationEmail(): Promise<void> {
+        if (auth.currentUser) {
+            await sendEmailVerification(auth.currentUser);
+        }
+    }
+
     static async resetPassword(email: string): Promise<void> {
         await sendPasswordResetEmail(auth, email);
     }
