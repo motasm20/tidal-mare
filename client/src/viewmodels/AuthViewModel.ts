@@ -28,6 +28,33 @@ export class AuthViewModel {
         return this.user?.role === 'admin';
     }
 
+    private getFriendlyErrorMessage(error: any): string {
+        const code = error.code || '';
+        const message = error.message || '';
+
+        switch (code) {
+            case 'auth/email-already-in-use':
+                return 'Dit e-mailadres is al in gebruik. Log in of probeer een ander adres.';
+            case 'auth/invalid-email':
+                return 'Het opgegeven e-mailadres is ongeldig.';
+            case 'auth/weak-password':
+                return 'Het wachtwoord is te zwak. Gebruik minimaal 6 tekens.';
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+            case 'auth/invalid-credential':
+                return 'Ongeldig e-mailadres of wachtwoord.';
+            case 'auth/too-many-requests':
+                return 'Te veel mislukte pogingen. Probeer het later opnieuw.';
+            case 'auth/network-request-failed':
+                return 'Er is een netwerkfout opgetreden. Controleer je verbinding.';
+            case 'auth/requires-recent-login':
+                return 'Voor deze actie moet je opnieuw inloggen.';
+            default:
+                if (message.includes('email-already-in-use')) return 'Dit e-mailadres is al in gebruik.';
+                return 'Er is een fout opgetreden. Probeer het opnieuw.';
+        }
+    }
+
     async login(email: string, password: string): Promise<void> {
         this.isLoading = true;
         this.error = null;
@@ -43,7 +70,7 @@ export class AuthViewModel {
             });
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.message || 'Login failed';
+                this.error = this.getFriendlyErrorMessage(e);
             });
         } finally {
             runInAction(() => {
@@ -66,7 +93,7 @@ export class AuthViewModel {
             });
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.message || 'Google login failed';
+                this.error = this.getFriendlyErrorMessage(e);
             });
         } finally {
             runInAction(() => {
@@ -90,8 +117,7 @@ export class AuthViewModel {
         } catch (e: any) {
             runInAction(() => {
                 console.error("Guest login error:", e);
-                // Show exact code for debugging
-                this.error = `Error (${e.code}): ${e.message}`;
+                this.error = this.getFriendlyErrorMessage(e);
             });
         } finally {
             runInAction(() => {
@@ -124,7 +150,7 @@ export class AuthViewModel {
             });
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.message || 'Registration failed';
+                this.error = this.getFriendlyErrorMessage(e);
             });
             throw e;
         } finally {
@@ -156,7 +182,7 @@ export class AuthViewModel {
             });
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.message;
+                this.error = this.getFriendlyErrorMessage(e);
             });
             throw e;
         } finally {
@@ -173,7 +199,7 @@ export class AuthViewModel {
             await AuthService.resetPassword(email);
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.message;
+                this.error = this.getFriendlyErrorMessage(e);
             });
             throw e;
         } finally {
@@ -189,7 +215,7 @@ export class AuthViewModel {
             await AuthService.resendCurrentVerificationEmail();
         } catch (e: any) {
             runInAction(() => {
-                this.error = e.message;
+                this.error = this.getFriendlyErrorMessage(e);
             });
         } finally {
             runInAction(() => {

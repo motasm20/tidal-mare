@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useParams, Link } from 'react-router-dom';
 import { BookingViewModel } from '../viewmodels/BookingViewModel';
 import { SmartKey } from '../components/SmartKey';
+import { Modal } from '../components/Modal';
 
 // Use a singleton or context in real app, creating here for simplicity/mvp per existing pattern
 const vm = new BookingViewModel();
@@ -184,46 +185,41 @@ export const BookingDetailsPage: React.FC = observer(() => {
             </div>
 
             {/* Cancel Modal */}
-            {showCancelDialog && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(17, 24, 39, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', zIndex: 1000 }}>
-                    <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', maxWidth: '28rem', width: '100%', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
-                        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                            <div style={{ margin: '0 auto 1rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '3rem', width: '3rem', borderRadius: '50%', background: '#fee2e2' }}>
-                                <span style={{ fontSize: '1.5rem' }}>⚠️</span>
-                            </div>
-                            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#111827', margin: 0 }}>Weet je het zeker?</h3>
-                            <p style={{ color: '#6b7280', marginTop: '0.5rem', fontSize: '0.9rem' }}>Je staat op het punt deze rit te annuleren. Dit kan niet ongedaan worden gemaakt.</p>
-                        </div>
+            <Modal
+                isOpen={showCancelDialog}
+                onClose={() => setShowCancelDialog(false)}
+                title="Rit Annuleren"
+                footer={
+                    <>
+                        <button
+                            onClick={() => setShowCancelDialog(false)}
+                            style={{ padding: '0.625rem 1rem', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.1)', color: 'white', fontWeight: '500', borderRadius: '8px', cursor: 'pointer' }}
+                        >
+                            Terug
+                        </button>
+                        <button
+                            onClick={handleCancel}
+                            disabled={vm.isCancelling}
+                            style={{ padding: '0.625rem 1rem', background: '#dc2626', color: 'white', fontWeight: '700', borderRadius: '8px', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(220, 38, 38, 0.2)' }}
+                        >
+                            {vm.isCancelling ? 'Bezig...' : 'Bevestig Annulering'}
+                        </button>
+                    </>
+                }
+            >
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <p style={{ color: '#d1d5db', marginBottom: '1rem', fontSize: '0.9rem' }}>Je staat op het punt deze rit te annuleren. Dit kan niet ongedaan worden gemaakt.</p>
 
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Reden van annulering (optioneel)</label>
-                            <input
-                                type="text"
-                                style={{ width: '100%', border: '1px solid #d1d5db', padding: '0.5rem 1rem', borderRadius: '8px', outline: 'none', transition: 'border-color 0.2s' }}
-                                placeholder="Bijv. Plannen gewijzigd..."
-                                value={cancelReason}
-                                onChange={(e) => setCancelReason(e.target.value)}
-                            />
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '0.75rem' }}>
-                            <button
-                                onClick={() => setShowCancelDialog(false)}
-                                style={{ flex: 1, padding: '0.625rem 1rem', border: '1px solid #d1d5db', background: 'white', color: '#374151', fontWeight: '500', borderRadius: '8px', cursor: 'pointer' }}
-                            >
-                                Terug
-                            </button>
-                            <button
-                                onClick={handleCancel}
-                                disabled={vm.isCancelling}
-                                style={{ flex: 1, padding: '0.625rem 1rem', background: '#dc2626', color: 'white', fontWeight: '700', borderRadius: '8px', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(220, 38, 38, 0.2)' }}
-                            >
-                                {vm.isCancelling ? 'Bezig...' : 'Bevestig'}
-                            </button>
-                        </div>
-                    </div>
+                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#d1d5db', marginBottom: '0.5rem' }}>Reden van annulering (optioneel)</label>
+                    <input
+                        type="text"
+                        style={{ width: '100%', border: '1px solid #4b5563', background: 'rgba(0,0,0,0.2)', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', outline: 'none', transition: 'border-color 0.2s' }}
+                        placeholder="Bijv. Plannen gewijzigd..."
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                    />
                 </div>
-            )}
+            </Modal>
         </div>
     );
 });

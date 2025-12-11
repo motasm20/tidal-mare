@@ -8,6 +8,8 @@ import { AddressAutocomplete } from '../components/AddressAutocomplete';
 import { MapPinIcon, UserIcon, HomeIcon, BriefcaseIcon } from '../components/Icons';
 import { CarMap } from '../components/CarMap';
 import { AnimatedBackground } from '../components/AnimatedBackground';
+import { Modal } from '../components/Modal';
+import { Toast } from '../components/Toast';
 
 const bookingVM = new BookingViewModel();
 
@@ -15,6 +17,8 @@ export const RequestCarPage: React.FC = observer(() => {
     const { user } = authViewModel;
     const navigate = useNavigate();
     const [isMapView, setIsMapView] = React.useState(true); // Default to Map View
+    const [showGuestModal, setShowGuestModal] = React.useState(false);
+    const [showSuccessToast, setShowSuccessToast] = React.useState(false);
 
     const playSuccessSound = () => {
         try {
@@ -57,6 +61,9 @@ export const RequestCarPage: React.FC = observer(() => {
             playSuccessSound();
             const duration = 3000;
             const end = Date.now() + duration;
+
+            // Show Toast
+            setShowSuccessToast(true);
 
             const frame = () => {
                 confetti({
@@ -141,10 +148,7 @@ export const RequestCarPage: React.FC = observer(() => {
 
     const handleConfirmBooking = () => {
         if (user?.role === 'guest') {
-            // Redirect guests to register
-            if (confirm("Als gast kun je niet boeken. Wil je een account aanmaken?")) {
-                navigate('/register');
-            }
+            setShowGuestModal(true);
             return;
         }
         bookingVM.confirmBooking();
@@ -464,20 +468,47 @@ export const RequestCarPage: React.FC = observer(() => {
                     </div>
                 )}
 
-                {/* Confirmation Modal */}
-                {bookingVM.bookingStatus === 'CONFIRMED' && (
-                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-                        <div style={{ background: 'white', padding: '2.5rem', borderRadius: '24px', maxWidth: '400px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
-                            <div style={{ width: '64px', height: '64px', background: '#d1fae5', color: '#047857', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', margin: '0 auto 1.5rem auto' }}>✓</div>
-                            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#111827', marginBottom: '0.5rem' }}>Boeking Bevestigd!</h3>
-                            <p style={{ color: '#4b5563', marginBottom: '2rem', lineHeight: '1.6' }}>
-                                Je rit is succesvol ingepland. We hebben een bevestiging naar je mail gestuurd.
-                            </p>
-                            <button onClick={() => bookingVM.clearForm()} className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-                                Terug naar overzicht
+                {/* Guest Modal */}
+                <Modal
+                    isOpen={showGuestModal}
+                    onClose={() => setShowGuestModal(false)}
+                    title="Account vereist"
+                    footer={
+                        <>
+                            <button
+                                onClick={() => setShowGuestModal(false)}
+                                style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.1)', fontWeight: '600', cursor: 'pointer', color: 'white', transition: 'background 0.2s' }}
+                            >
+                                Annuleren
                             </button>
-                        </div>
-                    </div>
+                            <button
+                                onClick={() => navigate('/register')}
+                                className="btn-primary"
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    borderRadius: '12px',
+                                    fontWeight: '700',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                                }}
+                            >
+                                Registreren
+                            </button>
+                        </>
+                    }
+                >
+                    <p>Als gast kun je niet boeken. Wil je een account aanmaken om verder te gaan?</p>
+                </Modal>
+
+                {/* Success Toast */}
+                {showSuccessToast && (
+                    <Toast
+                        message="Je rit is succesvol ingepland! Bevestiging verstuurd."
+                        type="success"
+                        onClose={() => {
+                            setShowSuccessToast(false);
+                            bookingVM.clearForm();
+                        }}
+                    />
                 )}
             </div>
         </div>

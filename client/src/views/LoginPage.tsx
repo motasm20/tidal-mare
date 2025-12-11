@@ -86,7 +86,24 @@ export const LoginPage: React.FC = observer(() => {
                 <h2 className="auth-title">Welkom terug</h2>
                 <p className="auth-subtitle">Log in om verder te gaan met Tidal Mare</p>
 
-                {authVM.error && <p className="error-message mb-4">{authVM.error}</p>}
+                {authVM.error && (
+                    <div className="error-message mb-4" style={{
+                        background: 'rgba(254, 226, 226, 0.5)',
+                        backdropFilter: 'blur(8px)',
+                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                        color: '#b91c1c',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        fontSize: '0.9rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '1rem'
+                    }}>
+                        <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+                        {authVM.error}
+                    </div>
+                )}
 
                 <form onSubmit={handleLogin}>
                     <div className="form-group">

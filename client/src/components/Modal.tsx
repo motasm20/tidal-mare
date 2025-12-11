@@ -14,11 +14,8 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
     return (
         <div style={{
             position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.5)',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.6)',
             backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
@@ -27,26 +24,31 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
             animation: 'fadeIn 0.2s ease'
         }}>
             <div style={{
-                background: 'white',
+                background: 'rgba(23, 23, 23, 0.9)', // Dark premium background
+                backdropFilter: 'blur(16px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '24px',
                 width: '90%',
                 maxWidth: '450px',
                 padding: '2rem',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
                 transform: 'translateY(0)',
-                animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                color: 'white'
             }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: '800', margin: 0, color: '#1f2937' }}>{title}</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: '800', margin: 0, color: 'white' }}>{title}</h3>
                     <button
                         onClick={onClose}
-                        style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#9ca3af', padding: '0.5rem' }}
+                        style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#9ca3af', padding: '0.5rem', transition: 'color 0.2s' }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}
                     >
                         ×
                     </button>
                 </div>
 
-                <div style={{ color: '#4b5563', lineHeight: '1.6', marginBottom: '2rem' }}>
+                <div style={{ color: '#d1d5db', lineHeight: '1.6', marginBottom: '2rem' }}>
                     {children}
                 </div>
 

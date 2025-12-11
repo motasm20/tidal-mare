@@ -36,7 +36,7 @@ export const DeleteAccountPage: React.FC = observer(() => {
                     <>
                         <button
                             onClick={() => setIsModalOpen(false)}
-                            style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: '#f3f4f6', border: 'none', fontWeight: '600', cursor: 'pointer', color: '#374151' }}
+                            style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.1)', fontWeight: '600', cursor: 'pointer', color: 'white', transition: 'background 0.2s' }}
                         >
                             Annuleren
                         </button>

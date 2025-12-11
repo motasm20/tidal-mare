@@ -83,7 +83,24 @@ export const RegisterPage: React.FC = observer(() => {
                 <h2 className="auth-title">Maak een account</h2>
                 <p className="auth-subtitle">Begin vandaag nog met jouw duurzame reis</p>
 
-                {authVM.error && <p className="error-message mb-4">{authVM.error}</p>}
+                {authVM.error && (
+                    <div className="error-message mb-4" style={{
+                        background: 'rgba(254, 226, 226, 0.5)',
+                        backdropFilter: 'blur(8px)',
+                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                        color: '#b91c1c',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        fontSize: '0.9rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '1rem'
+                    }}>
+                        <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+                        {authVM.error}
+                    </div>
+                )}
 
                 <form onSubmit={handleRegister}>
                     <div className="form-group">
