@@ -7,9 +7,10 @@ import {
     signInWithPopup,
     sendPasswordResetEmail,
     signInAnonymously,
-    sendEmailVerification
+    sendEmailVerification,
+    deleteUser
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import type { User } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 import { StorageService } from "./StorageService";
@@ -42,6 +43,21 @@ export class AuthService {
         // We typically don't create a permanent user doc for guests unless they convert, 
         // but we could track them if needed. For now, skip.
         return userCredential.user;
+    }
+
+    static async deleteAccount(): Promise<void> {
+        const user = auth.currentUser;
+        if (!user) throw new Error("No user logged in");
+
+        // 1. Delete User Profile from Firestore (PII)
+        // Bookings are in 'bookings' collection and will remain (but become anonymous/orphaned)
+        const userRef = doc(db, "users", user.uid);
+        await deleteDoc(userRef);
+
+        // 2. Delete Auth User
+        await deleteUser(user);
+
+        StorageService.removeToken();
     }
 
     static async register(email: string, password: string): Promise<User> {

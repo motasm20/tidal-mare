@@ -162,6 +162,30 @@ export class AuthViewModel {
         this.user = null;
     }
 
+    async deleteAccount(): Promise<void> {
+        this.isLoading = true;
+        this.error = null;
+        try {
+            await AuthService.deleteAccount();
+            runInAction(() => {
+                this.user = null;
+            });
+        } catch (e: any) {
+            runInAction(() => {
+                if (e.code === 'auth/requires-recent-login') {
+                    this.error = 'Login opnieuw in om je account te verwijderen.';
+                } else {
+                    this.error = e.message || 'Kon account niet verwijderen';
+                }
+            });
+            throw e;
+        } finally {
+            runInAction(() => {
+                this.isLoading = false;
+            });
+        }
+    }
+
     private checkAuth(): void {
         AuthService.onAuthStateChanged(async (user) => {
             if (user) {

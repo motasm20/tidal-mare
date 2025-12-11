@@ -8,6 +8,7 @@ import { Dashboard } from './views/Dashboard';
 import { RequestCarPage } from './views/RequestCarPage';
 import { BookingDetailsPage } from './views/BookingDetailsPage';
 import { ProfilePage } from './views/ProfilePage';
+import { DeleteAccountPage } from './views/DeleteAccountPage';
 
 import { AdminPanel } from './views/AdminPanel';
 
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/request" element={<RequestCarPage />} />
                 <Route path="/booking/:id" element={<BookingDetailsPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/delete-account" element={<DeleteAccountPage />} />
               </Route>
 
               {/* Admin Routes */}
