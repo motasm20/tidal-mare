@@ -90,4 +90,9 @@ export class AuthService {
             });
         }
     }
+    // Helper: Update user profile
+    static async updateUserProfile(uid: string, data: any): Promise<void> {
+        const userRef = doc(db, "users", uid);
+        await setDoc(userRef, data, { merge: true });
+    }
 }
