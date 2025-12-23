@@ -23,6 +23,8 @@ export const RequestCarPage: React.FC = observer(() => {
 
     const [showGuestModal, setShowGuestModal] = React.useState(false);
     const [showConfirmModal, setShowConfirmModal] = React.useState(false);
+    const [showCharging, setShowCharging] = React.useState(false);
+    const [showParking, setShowParking] = React.useState(false);
     const [showSuccessToast, setShowSuccessToast] = React.useState(false);
 
     const playSuccessSound = () => {
@@ -506,6 +508,32 @@ export const RequestCarPage: React.FC = observer(() => {
                                 <option value="GREENWHEELS">Greenwheels</option>
                                 <option value="EINDHOVEN">Overige (o.a. Iris)</option>
                             </select>
+                            <button
+                                onClick={() => setShowCharging(!showCharging)}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '4px', padding: '0.5rem 1rem',
+                                    borderRadius: '999px', fontSize: '0.9rem', fontWeight: '600', cursor: 'pointer',
+                                    background: showCharging ? '#ecfdf5' : 'white',
+                                    color: showCharging ? '#059669' : '#374151',
+                                    border: showCharging ? '1px solid #10b981' : '1px solid #d1d5db',
+                                    marginLeft: '0.5rem'
+                                }}
+                            >
+                                🔌 Laadpalen
+                            </button>
+                            <button
+                                onClick={() => setShowParking(!showParking)}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '4px', padding: '0.5rem 1rem',
+                                    borderRadius: '999px', fontSize: '0.9rem', fontWeight: '600', cursor: 'pointer',
+                                    background: showParking ? '#f3e8ff' : 'white',
+                                    color: showParking ? '#7c3aed' : '#374151',
+                                    border: showParking ? '1px solid #8b5cf6' : '1px solid #d1d5db',
+                                    marginLeft: '0.5rem'
+                                }}
+                            >
+                                🅿️ Parkeren
+                            </button>
                         </div>
 
                     </div>
@@ -572,6 +600,8 @@ export const RequestCarPage: React.FC = observer(() => {
                                         bookingVM.selectCar(car);
                                         handleConfirmBooking();
                                     }}
+                                    showChargingStations={showCharging}
+                                    showParkingLots={showParking}
                                 />
                             </div>
                         ) : (

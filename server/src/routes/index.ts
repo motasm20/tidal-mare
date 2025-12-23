@@ -4,6 +4,8 @@ import * as BookingController from '../controllers/bookingController';
 import * as MatchingController from '../controllers/matchingController';
 import * as CarsController from '../controllers/carsController';
 import * as ChargingPointsController from '../controllers/chargingPointsController';
+import { RDWController } from '../controllers/RDWController';
+import { ParkingController } from '../controllers/ParkingController';
 
 import * as UsersController from '../controllers/usersController';
 import { authenticateToken } from '../middleware/authMiddleware';
@@ -32,8 +34,17 @@ router.post('/cars', authenticateToken, CarsController.createCar); // Admin only
 router.delete('/cars/:id', authenticateToken, CarsController.deleteCar);
 
 // Charging Points
+router.get('/charging-points/search', ChargingPointsController.searchExternal);
 router.get('/charging-points', ChargingPointsController.getAllPoints);
 router.post('/charging-points', authenticateToken, ChargingPointsController.createPoint);
 router.delete('/charging-points/:id', authenticateToken, ChargingPointsController.deletePoint);
+
+// RDW
+const rdwController = new RDWController();
+router.get('/rdw/specs', (req, res) => rdwController.getSpecs(req, res));
+
+// Parking (RDW)
+const parkingController = new ParkingController();
+router.get('/parking/search', (req, res) => parkingController.searchGarages(req, res));
 
 export default router;

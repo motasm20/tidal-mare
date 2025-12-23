@@ -15,6 +15,8 @@ export const Dashboard: React.FC = observer(() => {
     // Filter State
     const [filterElectric, setFilterElectric] = useState(false);
     const [filterProvider, setFilterProvider] = useState('all');
+    const [showCharging, setShowCharging] = useState(false);
+    const [showParking, setShowParking] = useState(false);
 
     // Fetch cars for map
     useEffect(() => {
@@ -134,6 +136,30 @@ export const Dashboard: React.FC = observer(() => {
                                 <option value="GREENWHEELS">Greenwheels</option>
                                 <option value="EINDHOVEN">Overige (o.a. Iris)</option>
                             </select>
+                            <button
+                                onClick={() => setShowCharging(!showCharging)}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 12px',
+                                    borderRadius: '999px', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
+                                    background: showCharging ? '#ecfdf5' : 'white',
+                                    color: showCharging ? '#059669' : '#6b7280',
+                                    border: showCharging ? '1px solid #10b981' : '1px solid #d1d5db'
+                                }}
+                            >
+                                🔌 Laadpalen
+                            </button>
+                            <button
+                                onClick={() => setShowParking(!showParking)}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 12px',
+                                    borderRadius: '999px', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
+                                    background: showParking ? '#f3e8ff' : 'white', // light purple-100
+                                    color: showParking ? '#7c3aed' : '#6b7280', // purple-600
+                                    border: showParking ? '1px solid #8b5cf6' : '1px solid #d1d5db'
+                                }}
+                            >
+                                🅿️ Parkeren
+                            </button>
                         </div>
                         <Link to="/request" style={{ fontSize: '0.9rem', color: 'var(--primary-600)', fontWeight: '600', textDecoration: 'none' }}>
                             Bekijk alle auto's →
@@ -155,6 +181,8 @@ export const Dashboard: React.FC = observer(() => {
                             })}
                             center={[51.4416, 5.4697]}
                             zoom={12}
+                            showChargingStations={showCharging}
+                            showParkingLots={showParking}
                         />
                     )}
                 </div>

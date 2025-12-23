@@ -79,9 +79,22 @@ export interface BookingDTO {
 
 export interface ChargingPointDTO {
     id: string;
+    name?: string;
+    latitude: number;
+    longitude: number;
+    address?: string;
+    city?: string;
+    provider?: string;
+    connectorType?: string;
+    powerKW?: number;
+    status: 'AVAILABLE' | 'OCCUPIED' | 'UNKNOWN';
+}
+
+export interface ParkingGarageDTO {
+    id: string;
     name: string;
     latitude: number;
     longitude: number;
-    connectorType: string;
-    status: 'AVAILABLE' | 'OCCUPIED' | 'UNKNOWN';
+    type: string;
+    capacity?: number;
 }
