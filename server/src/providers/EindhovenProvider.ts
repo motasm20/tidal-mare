@@ -33,6 +33,11 @@ export class EindhovenProvider implements ICarProvider {
             const cars: CarDTO[] = [];
 
             records.forEach(record => {
+                // Debug logging for provider names
+                if (record.fields.aanbieder_deelauto) {
+                    console.log('DEBUG: Found provider: "' + record.fields.aanbieder_deelauto + '"');
+                }
+
                 // If a zone has multiple vehicles, we could theoretically spawn multiple cars.
                 // For this MVP/Demo, we create one representative car per zone/record.
                 const count = record.fields.aantal_voertuigen || 1;
