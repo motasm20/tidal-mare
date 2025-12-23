@@ -22,6 +22,7 @@ export const RequestCarPage: React.FC = observer(() => {
     // I'll stick to isMapView state but change the toggle UI.
 
     const [showGuestModal, setShowGuestModal] = React.useState(false);
+    const [showConfirmModal, setShowConfirmModal] = React.useState(false);
     const [showSuccessToast, setShowSuccessToast] = React.useState(false);
 
     const playSuccessSound = () => {
@@ -59,7 +60,7 @@ export const RequestCarPage: React.FC = observer(() => {
         }
     };
 
-    // Trigger confetti and sound on success
+    // Trigger confetti, sound and redirect on success
     useEffect(() => {
         if (bookingVM.bookingStatus === 'CONFIRMED' || bookingVM.bookingStatus === 'REQUESTED') {
             playSuccessSound();
@@ -69,6 +70,7 @@ export const RequestCarPage: React.FC = observer(() => {
             // Show Toast
             setShowSuccessToast(true);
 
+            // Confetti
             const frame = () => {
                 confetti({
                     particleCount: 7,
@@ -90,8 +92,13 @@ export const RequestCarPage: React.FC = observer(() => {
                 }
             };
             frame();
+
+            // Redirect to My Rides after a short delay
+            setTimeout(() => {
+                navigate('/my-rides');
+            }, 2000);
         }
-    }, [bookingVM.bookingStatus]);
+    }, [bookingVM.bookingStatus, navigate]);
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -170,6 +177,11 @@ export const RequestCarPage: React.FC = observer(() => {
             setShowGuestModal(true);
             return;
         }
+        setShowConfirmModal(true); // Open confirmation modal first
+    };
+
+    const executeBooking = () => {
+        setShowConfirmModal(false);
         bookingVM.confirmBooking();
     };
 
@@ -643,6 +655,63 @@ export const RequestCarPage: React.FC = observer(() => {
                         `}</style>
                     </div>
                 )}
+
+                {/* Confirmation Modal */}
+                <Modal
+                    isOpen={showConfirmModal}
+                    onClose={() => setShowConfirmModal(false)}
+                    title="Bevestig je boeking"
+                    footer={
+                        <>
+                            <button
+                                onClick={() => setShowConfirmModal(false)}
+                                style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: 'transparent', border: '1px solid #d1d5db', fontWeight: '600', cursor: 'pointer', color: '#6b7280', transition: 'all 0.2s' }}
+                            >
+                                Annuleren
+                            </button>
+                            <button
+                                onClick={executeBooking}
+                                className="btn-primary"
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    borderRadius: '12px',
+                                    fontWeight: '700',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                                }}
+                            >
+                                Bevestigen
+                            </button>
+                        </>
+                    }
+                >
+                    {bookingVM.selectedCar && (
+                        <div>
+                            <p style={{ marginBottom: '1rem', color: '#4b5563' }}>
+                                Je staat op het punt om de volgende auto te boeken:
+                            </p>
+                            <div style={{ background: '#f9fafb', padding: '1rem', borderRadius: '12px', border: '1px solid #e5e7eb', marginBottom: '1.5rem' }}>
+                                <h3 style={{ margin: '0 0 0.5rem 0', color: '#111827', fontSize: '1.2rem' }}>
+                                    {bookingVM.selectedCar.make} {bookingVM.selectedCar.model}
+                                </h3>
+                                <div style={{ display: 'flex', gap: '1rem', color: '#6b7280', fontSize: '0.9rem' }}>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        📍 {bookingVM.selectedCar.provider}
+                                    </span>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        ⚡ {bookingVM.selectedCar.fuelType}
+                                    </span>
+                                </div>
+                                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px dashed #d1d5db', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontWeight: '600', color: '#374151' }}>Geschatte prijs:</span>
+                                    <span style={{ fontWeight: '800', color: '#111827', fontSize: '1.2rem' }}>€{bookingVM.selectedCar.pricePerHourEstimate}<small>/uur</small></span>
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '0.9rem', color: '#6b7280' }}>
+                                Door te bevestigen ga je akkoord met de algemene voorwaarden van {bookingVM.selectedCar.provider}.
+                            </p>
+                        </div>
+                    )}
+                </Modal>
 
                 {/* Guest Modal */}
                 <Modal

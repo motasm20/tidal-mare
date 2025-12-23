@@ -64,15 +64,26 @@ export class EindhovenProvider implements ICarProvider {
 
         const originalProvider = record.fields.aanbieder_deelauto;
 
+        let mappedProvider: ProviderType = ProviderType.EINDHOVEN;
+        let mappedModel = 'Shared Car';
+
+        if (originalProvider && originalProvider.toLowerCase().includes('mywheels')) {
+            mappedProvider = ProviderType.MYWHEELS;
+            mappedModel = 'MyWheels Car';
+        } else if (originalProvider && originalProvider.toLowerCase().includes('greenwheels')) {
+            mappedProvider = ProviderType.GREENWHEELS;
+            mappedModel = 'Greenwheels Car';
+        }
+
         return {
             id: `eindhoven-${record.fields.naam_zone}-${index}`,
-            make: originalProvider, // Use the provider name as "Make" for visibility e.g. "MyWheels"
-            model: 'Shared Car', // Generic model
+            make: originalProvider || 'Deelauto', // Use the provider name as "Make" for visibility e.g. "MyWheels"
+            model: mappedModel,
             seats: 4, // Assumption
             luggageCapacity: 2, // Medium assumption
             fuelType: FuelType.EV, // Many shared cars in Eindhoven are EVs/Ambers
             range: 300, // Estimate
-            provider: ProviderType.EINDHOVEN,
+            provider: mappedProvider,
             pricePerHourEstimate: 5.00, // Placeholder
             location: location,
             imageUrl: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=500&q=60', // Generic car image
