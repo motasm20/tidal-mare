@@ -27,6 +27,7 @@ export const Navbar: React.FC = observer(() => {
                             <>
                                 <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>Home</NavLink>
                                 <NavLink to="/request" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>Reis aanvragen</NavLink>
+                                <NavLink to="/my-rides" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>Mijn Ritten</NavLink>
                                 <NavLink to="/profile" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>Profiel</NavLink>
                             </>
                         )}

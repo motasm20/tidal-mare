@@ -9,6 +9,7 @@ import { RequestCarPage } from './views/RequestCarPage';
 import { BookingDetailsPage } from './views/BookingDetailsPage';
 import { ProfilePage } from './views/ProfilePage';
 import { DeleteAccountPage } from './views/DeleteAccountPage';
+import { MyRidesPage } from './views/MyRidesPage';
 
 import { AdminPanel } from './views/AdminPanel';
 
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/request" element={<RequestCarPage />} />
                 <Route path="/booking/:id" element={<BookingDetailsPage />} />
+                <Route path="/my-rides" element={<MyRidesPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/delete-account" element={<DeleteAccountPage />} />
               </Route>
