@@ -281,15 +281,15 @@ export const RequestCarPage: React.FC = observer(() => {
                                 </div>
 
                                 {/* Swap Button (Centered) */}
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: '1rem', marginTop: '-10px', marginBottom: '-10px', position: 'relative', zIndex: 10, pointerEvents: 'none' }}>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: '1rem', marginTop: '-14px', marginBottom: '-14px', position: 'relative', zIndex: 10, pointerEvents: 'none' }}>
                                     <button
                                         onClick={handleSwapAddresses}
                                         style={{
                                             background: 'white',
                                             border: '1px solid #e5e7eb',
                                             borderRadius: '50%',
-                                            width: '32px',
-                                            height: '32px',
+                                            width: isMobile ? '28px' : '32px',
+                                            height: isMobile ? '28px' : '32px',
                                             cursor: 'pointer',
                                             display: 'flex',
                                             alignItems: 'center',
@@ -297,7 +297,8 @@ export const RequestCarPage: React.FC = observer(() => {
                                             transition: 'all 0.2s',
                                             transform: 'rotate(90deg)',
                                             boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-                                            pointerEvents: 'auto'
+                                            pointerEvents: 'auto',
+                                            fontSize: isMobile ? '0.8rem' : '1rem'
                                         }}
                                         title="Wissel Locaties"
                                     >
