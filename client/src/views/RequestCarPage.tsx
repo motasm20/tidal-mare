@@ -504,7 +504,7 @@ export const RequestCarPage: React.FC = observer(() => {
                                 <option value="all">Alle aanbieders</option>
                                 <option value="MYWHEELS">MyWheels</option>
                                 <option value="GREENWHEELS">Greenwheels</option>
-                                <option value="EINDHOVEN">Eindhoven Data</option>
+                                <option value="EINDHOVEN">Overige (o.a. Iris)</option>
                             </select>
                         </div>
 

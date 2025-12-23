@@ -73,11 +73,15 @@ export class EindhovenProvider implements ICarProvider {
         } else if (originalProvider && originalProvider.toLowerCase().includes('greenwheels')) {
             mappedProvider = ProviderType.GREENWHEELS;
             mappedModel = 'Greenwheels Car';
+        } else if (originalProvider && originalProvider.toLowerCase().includes('iris')) {
+            // "Iris Elektrick" normalization
+            // mappedProvider stays EINDHOVEN (generic/other)
+            mappedModel = 'Iris Elektrick';
         }
 
         return {
             id: `eindhoven-${record.fields.naam_zone}-${index}`,
-            make: originalProvider || 'Deelauto', // Use the provider name as "Make" for visibility e.g. "MyWheels"
+            make: (originalProvider && originalProvider.toLowerCase().includes('iris')) ? 'Iris Elektrick' : (originalProvider || 'Deelauto'),
             model: mappedModel,
             seats: 4, // Assumption
             luggageCapacity: 2, // Medium assumption
