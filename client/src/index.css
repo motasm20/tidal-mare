@@ -155,9 +155,15 @@ a:hover {
   display: flex;
   gap: 2.5rem;
   align-items: center;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+}
+
+/* Center navbar links only on large screens where space allows */
+@media (min-width: 1200px) {
+  .navbar-menu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 .navbar-links {

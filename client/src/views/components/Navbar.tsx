@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { authViewModel } from '../../viewmodels';
 
@@ -15,9 +15,9 @@ export const Navbar: React.FC = observer(() => {
     return (
         <nav className="navbar">
             <div className="navbar-inner">
-                <div className="navbar-brand">
+                <Link to="/" className="navbar-brand">
                     Onze Bedrijf Mobility
-                </div>
+                </Link>
                 <div className="navbar-menu">
                     <div className="navbar-links">
                         {!isAuthenticated && (
