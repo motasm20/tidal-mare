@@ -49,13 +49,17 @@ export const MyRidesPage: React.FC = observer(() => {
     const sectionTitleStyle: React.CSSProperties = {
         fontSize: '1.5rem',
         fontWeight: '700',
-        color: '#111827',
+        color: '#111827', // Dark gray/black
         marginBottom: '1.5rem',
         paddingBottom: '0.5rem',
         borderBottom: '1px solid #e5e7eb',
         display: 'flex',
         alignItems: 'center',
-        gap: '0.5rem'
+        gap: '0.5rem',
+        background: 'rgba(255,255,255,0.8)', // Add background
+        padding: '0.5rem',
+        borderRadius: '8px',
+        backdropFilter: 'blur(4px)'
     };
 
     const emptyStateStyle: React.CSSProperties = {
@@ -73,10 +77,10 @@ export const MyRidesPage: React.FC = observer(() => {
             <AnimatedBackground />
 
             <div style={containerStyle}>
-                <div style={{ marginBottom: '2rem', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ marginBottom: '2rem', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.7)', padding: '1.5rem', borderRadius: '16px', backdropFilter: 'blur(10px)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
                     <div>
                         <h1 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#111827', marginBottom: '0.5rem' }}>Mijn Ritten</h1>
-                        <p style={{ color: '#4b5563', fontSize: '1.1rem' }}>Beheer je aankomende en afgelopen reizen.</p>
+                        <p style={{ color: '#374151', fontSize: '1.1rem', fontWeight: '500' }}>Beheer je aankomende en afgelopen reizen.</p>
                     </div>
                     <Link to="/request" className="btn-primary" style={{ textDecoration: 'none', background: '#111827', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
                         + Nieuwe Rit
