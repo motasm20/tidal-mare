@@ -246,14 +246,16 @@ export class AuthViewModel {
                     return;
                 }
 
-                // If logged in, fetch their profile for the REAL role
+                // If logged in, fetch their profile for the REAL role and details
                 try {
                     const profile = await AuthService.getUserProfile(user.uid);
                     runInAction(() => {
                         this.user = {
                             id: user.uid,
                             email: user.email || '',
-                            role: profile?.role || 'customer' // Fallback to customer
+                            role: profile?.role || 'customer', // Fallback to customer
+                            // Spread other profile fields (firstName, locations, etc.)
+                            ...profile
                         };
                     });
                 } catch (e) {

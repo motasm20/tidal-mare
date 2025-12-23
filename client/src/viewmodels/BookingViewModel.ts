@@ -1,8 +1,9 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import { BookingStatus, ProviderType, FuelType } from '../models';
+import { BookingStatus } from '../models';
 import type { CarDTO } from '../models';
+import axios from 'axios';
 import { BookingService } from '../services/BookingService';
-import { auth } from '../config/firebase'; // Direct access to auth for ID
+import { auth } from '../config/firebase'; // Direct access to user ID
 import type { AddressSuggestion } from '../services/AddressSuggestionService';
 
 export class BookingViewModel {
@@ -134,58 +135,40 @@ export class BookingViewModel {
             return;
         }
 
-        // Mock API call for demo stability
         this.isLoading = true;
         this.error = null;
         this.availableCars = [];
 
-        // Simulate network delay
-        setTimeout(() => {
+        try {
+            const criteria = {
+                startLocation: {
+                    address: this.startAddressSummary,
+                    latitude: this.startLat || 51.4416,
+                    longitude: this.startLng || 5.4697
+                },
+                endLocation: {
+                    address: this.endAddressSummary,
+                    latitude: this.endLat || 51.4416,
+                    longitude: this.endLng || 5.4697
+                },
+                dateTime: this.dateTime,
+                passengers: this.passengers,
+                luggageLevel: this.luggageLevel
+            };
+
+            const response = await axios.post('http://localhost:3000/api/matching/search', criteria);
+
             runInAction(() => {
-                this.availableCars = [
-                    {
-                        id: 'car-1',
-                        make: 'Tesla',
-                        model: 'Model Y',
-                        provider: ProviderType.MYWHEELS,
-                        seats: 4,
-                        fuelType: FuelType.EV,
-                        luggageCapacity: 1,
-                        range: 450,
-                        pricePerHourEstimate: 18,
-                        rating: 4.8,
-                        location: { latitude: 52.3676, longitude: 4.9041, address: 'Amsterdam Centrum' }
-                    } as CarDTO,
-                    {
-                        id: 'car-2',
-                        make: 'BMW',
-                        model: 'iX',
-                        provider: ProviderType.GREENWHEELS,
-                        seats: 5,
-                        fuelType: FuelType.EV,
-                        luggageCapacity: 2,
-                        range: 520,
-                        pricePerHourEstimate: 24,
-                        rating: 4.9,
-                        location: { latitude: 52.3650, longitude: 4.9000, address: 'Amsterdam Zuid' }
-                    } as CarDTO,
-                    {
-                        id: 'car-3',
-                        make: 'Polestar',
-                        model: '2',
-                        provider: ProviderType.MYWHEELS,
-                        seats: 4,
-                        fuelType: FuelType.EV,
-                        luggageCapacity: 1,
-                        range: 400,
-                        pricePerHourEstimate: 16,
-                        rating: 4.7,
-                        location: { latitude: 52.3700, longitude: 4.9100, address: 'Amsterdam Oost' }
-                    } as CarDTO
-                ];
+                this.availableCars = response.data;
                 this.isLoading = false;
             });
-        }, 800);
+        } catch (err) {
+            runInAction(() => {
+                console.error("Search failed", err);
+                this.error = "Er ging iets mis bij het zoeken naar auto's.";
+                this.isLoading = false;
+            });
+        }
     }
 
     selectCar(car: CarDTO) {

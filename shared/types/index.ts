@@ -9,7 +9,8 @@ export type BookingStatus = typeof BookingStatus[keyof typeof BookingStatus];
 export const ProviderType = {
     DUMMY: 'DUMMY',
     GREENWHEELS: 'GREENWHEELS',
-    MYWHEELS: 'MYWHEELS'
+    MYWHEELS: 'MYWHEELS',
+    EINDHOVEN: 'EINDHOVEN'
 } as const;
 export type ProviderType = typeof ProviderType[keyof typeof ProviderType];
 

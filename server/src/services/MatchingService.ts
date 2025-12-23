@@ -4,11 +4,14 @@ import { DummyProvider } from '../providers/DummyProvider';
 import { GreenWheelsPlaceholder } from '../providers/GreenWheelsPlaceholder';
 import { MyWheelsPlaceholder } from '../providers/MyWheelsPlaceholder';
 
+import { EindhovenProvider } from '../providers/EindhovenProvider';
+
 class MatchingService {
     private providers: ICarProvider[] = [
         new DummyProvider(),
         new GreenWheelsPlaceholder(),
-        new MyWheelsPlaceholder()
+        new MyWheelsPlaceholder(),
+        new EindhovenProvider()
     ];
 
     async findMatches(criteria: MatchingCriteria): Promise<CarDTO[]> {
