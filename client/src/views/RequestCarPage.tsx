@@ -441,6 +441,64 @@ export const RequestCarPage: React.FC = observer(() => {
                     </div>
                 </div>
 
+                {/* Filters Section (Only if we have results or filters are active) */}
+                {(bookingVM._allCars.length > 0 || bookingVM.filterElectricOnly || bookingVM.filterProvider !== 'all') && (
+                    <div style={{ maxWidth: '1280px', margin: '2rem auto 1rem', padding: '0 1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+
+                        {/* Electric Filter */}
+                        <button
+                            onClick={() => bookingVM.setFilterElectricOnly(!bookingVM.filterElectricOnly)}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                padding: '0.5rem 1rem',
+                                borderRadius: '999px',
+                                background: bookingVM.filterElectricOnly ? '#d1fae5' : 'white',
+                                color: bookingVM.filterElectricOnly ? '#065f46' : '#374151',
+                                border: bookingVM.filterElectricOnly ? '1px solid #059669' : '1px solid #d1d5db',
+                                fontWeight: '600',
+                                fontSize: '0.9rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            <span>⚡</span> Elektrisch
+                        </button>
+
+                        {/* Provider Filter */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ fontSize: '0.9rem', color: '#6b7280', fontWeight: '500' }}>Aanbieder:</span>
+                            <select
+                                value={bookingVM.filterProvider}
+                                onChange={(e) => bookingVM.setFilterProvider(e.target.value)}
+                                style={{
+                                    padding: '0.5rem 2rem 0.5rem 1rem',
+                                    borderRadius: '999px',
+                                    border: '1px solid #d1d5db',
+                                    background: 'white',
+                                    color: '#374151',
+                                    fontWeight: '500',
+                                    fontSize: '0.9rem',
+                                    cursor: 'pointer',
+                                    outline: 'none',
+                                    appearance: 'none',
+                                    backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`,
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundPosition: 'right 0.7rem top 50%',
+                                    backgroundSize: '0.65rem auto'
+                                }}
+                            >
+                                <option value="all">Alle aanbieders</option>
+                                <option value="MYWHEELS">MyWheels</option>
+                                <option value="GREENWHEELS">Greenwheels</option>
+                                <option value="EINDHOVEN">Eindhoven Data</option>
+                            </select>
+                        </div>
+
+                    </div>
+                )}
+
                 {/* Results Section */}
                 {bookingVM.availableCars.length > 0 && (
                     <div style={{ marginTop: '3rem' }} id="results-section">
@@ -629,6 +687,6 @@ export const RequestCarPage: React.FC = observer(() => {
                     />
                 )}
             </div>
-        </div>
+        </div >
     );
 });

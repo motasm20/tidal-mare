@@ -33,8 +33,13 @@ export class BookingViewModel {
     passengers: number = 1;
     luggageLevel: number = 0; // 0=none, 1=small, 2=medium, 3=large
 
-    availableCars: CarDTO[] = [];
+    // Data
+    _allCars: CarDTO[] = []; // Store the raw API response here
     selectedCar: CarDTO | null = null;
+
+    // Filter State
+    filterElectricOnly: boolean = false;
+    filterProvider: string = 'all'; // 'all' or specific provider name
 
     isLoading: boolean = false;
     error: string | null = null;
@@ -137,7 +142,9 @@ export class BookingViewModel {
 
         this.isLoading = true;
         this.error = null;
-        this.availableCars = [];
+        this.isLoading = true;
+        this.error = null;
+        this._allCars = [];
 
         try {
             const criteria = {
@@ -159,7 +166,7 @@ export class BookingViewModel {
             const response = await axios.post('http://localhost:3000/api/matching/search', criteria);
 
             runInAction(() => {
-                this.availableCars = response.data;
+                this._allCars = response.data;
                 this.isLoading = false;
             });
         } catch (err) {
@@ -237,8 +244,37 @@ export class BookingViewModel {
         this.isEndAddressValid = false;
 
         this.bookingNote = '';
-        this.availableCars = [];
+        this.bookingNote = '';
+        this._allCars = [];
         this.bookingStatus = null;
+        this.filterElectricOnly = false;
+        this.filterProvider = 'all';
+    }
+
+    // --- Filter Actions ---
+    setFilterElectricOnly(value: boolean) {
+        this.filterElectricOnly = value;
+    }
+
+    setFilterProvider(value: string) {
+        this.filterProvider = value;
+    }
+
+    // --- Computed: Authenticated Filtered Cars ---
+    get availableCars(): CarDTO[] {
+        return this._allCars.filter(car => {
+            // Fuel Filter (Electric Only)
+            if (this.filterElectricOnly && car.fuelType !== 'EV') {
+                return false;
+            }
+
+            // Provider Filter
+            if (this.filterProvider !== 'all' && car.provider !== this.filterProvider) {
+                return false;
+            }
+
+            return true;
+        });
     }
 
     // --- Summary Getters ---
