@@ -2,34 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { observer } from 'mobx-react-lite';
-import { BookingService } from '../services/BookingService';
-import type { BookingDTO, CarDTO, LocationDTO } from '../models';
+import type { CarDTO, LocationDTO } from '../models';
 import { SustainabilityStats } from '../components/SustainabilityStats';
 import { CarMap } from '../components/Map/CarMap'; // Import CarMap
 import { authViewModel } from '../viewmodels';
 // @ts-ignore - Component exists but TS might not see it immediately in this environment
-import { BookingCard } from '../components/BookingCard';
 
 export const Dashboard: React.FC = observer(() => {
-    const [bookings, setBookings] = React.useState<BookingDTO[]>([]);
     const [cars, setCars] = useState<CarDTO[]>([]);
     const [loadingMap, setLoadingMap] = useState(true);
-
-    React.useEffect(() => {
-        const fetchBookings = async () => {
-            // Use the actual logged-in user ID
-            const userId = authViewModel.user?.id;
-            if (!userId) return;
-
-            try {
-                const userBookings = await BookingService.getUserBookings(userId);
-                setBookings(userBookings);
-            } catch (err) {
-                console.error("Failed to fetch bookings", err);
-            }
-        };
-        fetchBookings();
-    }, [authViewModel.user]);
 
     // Fetch cars for map
     useEffect(() => {
@@ -59,10 +40,7 @@ export const Dashboard: React.FC = observer(() => {
         fetchCars();
     }, []);
 
-    // Split bookings
-    const upcomingBookings = bookings.filter(b => ['REQUESTED', 'CONFIRMED'].includes(b.status));
-    const historyBookings = bookings.filter(b => ['CANCELLED', 'COMPLETED'].includes(b.status));
-
+    // Live map logic
     return (
         <div className="dashboard app-container">
 
@@ -117,7 +95,13 @@ export const Dashboard: React.FC = observer(() => {
 
             {/* Live Map Section */}
             <section style={{ marginBottom: '3rem' }}>
-                <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--slate-200)', paddingBottom: '0.5rem' }}>🗺️ Live Beschikbaarheid</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--slate-200)', paddingBottom: '0.5rem' }}>
+                    <h3 style={{ margin: 0 }}>🗺️ Live Beschikbaarheid</h3>
+                    <Link to="/request" style={{ fontSize: '0.9rem', color: 'var(--primary-600)', fontWeight: '600', textDecoration: 'none' }}>
+                        Bekijk alle auto's →
+                    </Link>
+                </div>
+
                 <div style={{ background: 'white', padding: '1rem', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid rgba(255, 255, 255, 0.5)' }}>
                     {loadingMap ? (
                         <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -127,42 +111,6 @@ export const Dashboard: React.FC = observer(() => {
                         <CarMap cars={cars} center={[51.4416, 5.4697]} zoom={12} />
                     )}
                 </div>
-            </section>
-
-            {/* Upcoming Bookings Section */}
-            <section style={{ marginBottom: '3rem' }}>
-                <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--slate-200)', paddingBottom: '0.5rem' }}>📅 Aankomende Ritten</h3>
-                {upcomingBookings.length === 0 ? (
-                    <div className="empty-state card" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
-                        <p>Je hebt nog geen ritten gepland.</p>
-                    </div>
-                ) : (
-                    <div className="bookings-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                        {upcomingBookings.map(b => (
-                            <div key={b.id} className="booking-wrapper">
-                                <BookingCard booking={b} />
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </section>
-
-            {/* History Section */}
-            <section>
-                <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--slate-200)', paddingBottom: '0.5rem' }}>📜 Geschiedenis</h3>
-                {historyBookings.length === 0 ? (
-                    <div className="empty-state card" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
-                        <p>Nog geen ritten gemaakt.</p>
-                    </div>
-                ) : (
-                    <div className="bookings-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                        {historyBookings.map(b => (
-                            <div key={b.id} className="booking-wrapper">
-                                <BookingCard booking={b} />
-                            </div>
-                        ))}
-                    </div>
-                )}
             </section>
         </div>
     );
