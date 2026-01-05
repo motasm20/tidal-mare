@@ -66,7 +66,7 @@ export const InteractiveMap: React.FC<MapComponentProps> = ({
         ? [startPosition.lat, startPosition.lng]
         : endPosition
             ? [endPosition.lat, endPosition.lng]
-            : [52.1326, 5.2913]; // Fallback: Netherlands
+            : [52.1326, 5.2913];
 
     const zoom = startPosition || endPosition ? 13 : 8;
 
