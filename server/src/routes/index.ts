@@ -47,4 +47,9 @@ router.get('/rdw/specs', (req, res) => rdwController.getSpecs(req, res));
 const parkingController = new ParkingController();
 router.get('/parking/search', (req, res) => parkingController.searchGarages(req, res));
 
+// Routing
+import { RoutingController } from '../controllers/RoutingController';
+const routingController = new RoutingController();
+router.get('/routing/route', (req, res) => routingController.getRoute(req, res));
+
 export default router;

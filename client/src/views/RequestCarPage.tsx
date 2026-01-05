@@ -6,7 +6,7 @@ import { BookingViewModel } from '../viewmodels/BookingViewModel';
 import { authViewModel } from '../viewmodels';
 import { AddressAutocomplete } from '../components/AddressAutocomplete';
 import { MapPinIcon, UserIcon, HomeIcon, BriefcaseIcon } from '../components/Icons';
-import { CarMap } from '../components/CarMap';
+import { CarMap } from '../components/Map/CarMap';
 import { AnimatedBackground } from '../components/AnimatedBackground';
 import { Modal } from '../components/Modal';
 import { Toast } from '../components/Toast';
@@ -602,6 +602,11 @@ export const RequestCarPage: React.FC = observer(() => {
                                     }}
                                     showChargingStations={showCharging}
                                     showParkingLots={showParking}
+                                    destination={
+                                        (bookingVM.endLat && bookingVM.endLng)
+                                            ? [bookingVM.endLat, bookingVM.endLng]
+                                            : null
+                                    }
                                 />
                             </div>
                         ) : (

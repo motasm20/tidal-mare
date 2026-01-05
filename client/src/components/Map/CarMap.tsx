@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { CarDTO } from '../../../../shared/types';
 import { ProviderType } from '../../../../shared/types';
@@ -14,6 +14,7 @@ interface CarMapProps {
     showChargingStations?: boolean;
     showParkingLots?: boolean;
     onSelectCar?: (car: CarDTO) => void;
+    destination?: [number, number] | null;
 }
 
 // Component to update map center when props change
@@ -49,10 +50,13 @@ interface RDWSpecs {
     color: string;
     year: number;
     description: string;
+    consumption?: number;
+    fuelType?: string;
 }
 
-const CarPopupContent: React.FC<{ car: CarDTO; onSelectCar?: (car: CarDTO) => void; color: string }> = ({ car, onSelectCar, color }) => {
+const CarPopupContent: React.FC<{ car: CarDTO; onSelectCar?: (car: CarDTO) => void; color: string; walkStats?: { duration: number; distance: number } | null; destination?: [number, number] | null }> = ({ car, onSelectCar, color, walkStats, destination }) => {
     const [rdwSpecs, setSpecs] = React.useState<RDWSpecs | null>(null);
+    const [tripCost, setTripCost] = React.useState<string | null>(null);
 
     useEffect(() => {
         const fetchSpecs = async () => {
@@ -63,16 +67,55 @@ const CarPopupContent: React.FC<{ car: CarDTO; onSelectCar?: (car: CarDTO) => vo
                 });
                 setSpecs(response.data);
             } catch (e) {
-                // Silent fail/no specs found
             }
         };
         fetchSpecs();
     }, [car.make, car.model]);
 
+    useEffect(() => {
+        const calculateCost = async () => {
+            if (!rdwSpecs?.consumption || !destination || !car.location) return;
+
+            try {
+                const response = await axios.get('http://localhost:3000/api/routing/route', {
+                    params: {
+                        startLat: car.location.latitude,
+                        startLng: car.location.longitude,
+                        endLat: destination[0],
+                        endLng: destination[1],
+                        mode: 'driving'
+                    }
+                });
+
+                const distanceKm = response.data.distance / 1000;
+                let price = 0;
+
+                if (rdwSpecs.fuelType === 'Elektriciteit') {
+                    // consumption is kWh/100km
+                    // Cost = (Dist / 100) * Cons * PricePerKwh
+                    price = (distanceKm / 100) * rdwSpecs.consumption * 0.40; // €0.40/kWh
+                } else {
+                    // consumption is L/100km
+                    price = (distanceKm / 100) * rdwSpecs.consumption * 2.00; // €2.00/L
+                }
+
+                setTripCost(price.toFixed(2));
+            } catch (e) { console.error(e); }
+        };
+        calculateCost();
+    }, [rdwSpecs, destination, car.location]);
+
     return (
         <div className="car-popup">
             <h4 style={{ margin: '0 0 5px 0' }}>{car.make} {car.model}</h4>
-            <p style={{ margin: '0', fontSize: '0.9em', color: '#666' }}>{car.location?.address || 'Locatie onbekend'}</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <p style={{ margin: '0', fontSize: '0.9em', color: '#666' }}>{car.location?.address || 'Locatie onbekend'}</p>
+                {walkStats && (
+                    <span style={{ fontSize: '0.8em', fontWeight: 'bold', color: '#2563eb', background: '#dbeafe', padding: '2px 6px', borderRadius: '4px' }}>
+                        🚶 {Math.ceil(walkStats.duration / 60)} min
+                    </span>
+                )}
+            </div>
 
             <div style={{ marginTop: '8px', display: 'flex', gap: '5px' }}>
                 <span className="badge" style={{ background: color, color: 'white', padding: '2px 6px', borderRadius: '4px', fontSize: '0.8em' }}>
@@ -82,6 +125,12 @@ const CarPopupContent: React.FC<{ car: CarDTO; onSelectCar?: (car: CarDTO) => vo
                     €{car.pricePerHourEstimate}/hr
                 </span>
             </div>
+
+            {tripCost && (
+                <div style={{ marginTop: '8px', padding: '6px', background: '#ecfdf5', borderRadius: '4px', fontSize: '0.8em', border: '1px solid #10b981', color: '#064e3b' }}>
+                    ⛽ Ritprijs (est): <strong>€{tripCost}</strong>
+                </div>
+            )}
 
             {rdwSpecs && (
                 <div style={{ marginTop: '8px', padding: '6px', background: '#f3f4f6', borderRadius: '4px', fontSize: '0.8em', borderLeft: '3px solid #F6AD55' }}>
@@ -104,7 +153,7 @@ const CarPopupContent: React.FC<{ car: CarDTO; onSelectCar?: (car: CarDTO) => vo
     );
 };
 
-export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697], zoom = 13, showChargingStations = false, showParkingLots = false, onSelectCar }) => {
+export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697], zoom = 13, showChargingStations = false, showParkingLots = false, onSelectCar, destination }) => {
     const [chargingPoints, setChargingPoints] = React.useState<ChargingPointDTO[]>([]);
 
     useEffect(() => {
@@ -154,6 +203,39 @@ export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697]
         }
     }, [showParkingLots, center]);
 
+    // Routing State
+    const [routeGeoJson, setRouteGeoJson] = React.useState<any>(null);
+    const [walkStats, setWalkStats] = React.useState<{ duration: number; distance: number } | null>(null);
+    const [selectedCarId, setSelectedCarId] = React.useState<string | null>(null);
+
+    const handleCarClick = async (car: CarDTO) => {
+        setSelectedCarId(car.id);
+        setRouteGeoJson(null);
+        setWalkStats(null);
+
+        if (!center || !car.location) return;
+
+        try {
+            const response = await axios.get('http://localhost:3000/api/routing/route', {
+                params: {
+                    startLat: center[0],
+                    startLng: center[1],
+                    endLat: car.location.latitude,
+                    endLng: car.location.longitude,
+                    mode: 'walking'
+                }
+            });
+
+            setRouteGeoJson(response.data.geometry);
+            setWalkStats({
+                duration: response.data.duration,
+                distance: response.data.distance
+            });
+        } catch (e) {
+            console.error("Failed to fetch route", e);
+        }
+    };
+
     return (
         <div className="car-map-container" style={{ height: '500px', width: '100%', borderRadius: '12px', overflow: 'hidden', zIndex: 0 }}>
             <MapContainer center={center} zoom={zoom} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
@@ -163,6 +245,15 @@ export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697]
                 />
 
                 <MapUpdater center={center} zoom={zoom} />
+
+                {/* Route Layer */}
+                {routeGeoJson && (
+                    <GeoJSON
+                        key={selectedCarId} // Force re-render on new route
+                        data={routeGeoJson}
+                        style={{ color: '#3b82f6', weight: 4, dashArray: '10, 10', opacity: 0.8 }}
+                    />
+                )}
 
                 {/* Cars Layer */}
                 {cars.map(car => {
@@ -177,6 +268,9 @@ export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697]
                                 key={car.id}
                                 center={[car.location.latitude, car.location.longitude]}
                                 radius={8}
+                                eventHandlers={{
+                                    click: () => handleCarClick(car)
+                                }}
                                 pathOptions={{
                                     color: color,
                                     fillColor: color,
@@ -184,7 +278,13 @@ export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697]
                                 }}
                             >
                                 <Popup>
-                                    <CarPopupContent car={car} onSelectCar={onSelectCar} color={color} />
+                                    <CarPopupContent
+                                        car={car}
+                                        onSelectCar={onSelectCar}
+                                        color={color}
+                                        walkStats={selectedCarId === car.id ? walkStats : null}
+                                        destination={destination}
+                                    />
                                 </Popup>
                             </CircleMarker>
                         )
