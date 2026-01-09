@@ -11,6 +11,7 @@ import { authViewModel } from '../viewmodels';
 export const Dashboard: React.FC = observer(() => {
     const [cars, setCars] = useState<CarDTO[]>([]);
     const [loadingMap, setLoadingMap] = useState(true);
+    const [mapCenter, setMapCenter] = useState<[number, number]>([51.4416, 5.4697]);
 
     // Filter State
     const [filterElectric, setFilterElectric] = useState(false);
@@ -20,17 +21,20 @@ export const Dashboard: React.FC = observer(() => {
 
     // Fetch cars for map
     useEffect(() => {
-        const fetchCars = async () => {
+        const fetchCars = async (latitude: number, longitude: number, address: string = 'Huidige Locatie') => {
             try {
-                const dummyLocation: LocationDTO = {
-                    address: 'Eindhoven',
-                    latitude: 51.4416,
-                    longitude: 5.4697
+                if (latitude && longitude) {
+                    setMapCenter([latitude, longitude]);
+                }
+                const location: LocationDTO = {
+                    address: address,
+                    latitude: latitude,
+                    longitude: longitude
                 };
 
                 const response = await axios.post<CarDTO[]>('http://localhost:3000/api/matching/search', {
-                    startLocation: dummyLocation,
-                    endLocation: dummyLocation,
+                    startLocation: location,
+                    endLocation: location, // For now start=end for "search nearby"
                     passengers: 1,
                     luggageLevel: 0,
                     dateTime: new Date().toISOString()
@@ -43,7 +47,20 @@ export const Dashboard: React.FC = observer(() => {
             }
         };
 
-        fetchCars();
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    fetchCars(position.coords.latitude, position.coords.longitude);
+                },
+                (error) => {
+                    console.warn("Geolocation permission denied or failed, falling back to Eindhoven:", error);
+                    fetchCars(51.4416, 5.4697, 'Eindhoven (Fallback)');
+                }
+            );
+        } else {
+            // Browser doesn't support Geolocation
+            fetchCars(51.4416, 5.4697, 'Eindhoven (Fallback)');
+        }
     }, []);
 
     // Live map logic
@@ -220,7 +237,7 @@ export const Dashboard: React.FC = observer(() => {
                                 if (filterProvider !== 'all' && car.provider !== filterProvider) return false;
                                 return true;
                             })}
-                            center={[51.4416, 5.4697]}
+                            center={mapCenter}
                             zoom={12}
                             showChargingStations={showCharging}
                             showParkingLots={showParking}

@@ -8,12 +8,7 @@ export class AuthViewModel {
     isLoading: boolean = false;
     error: string | null = null;
 
-    // Mock Sustainability Stats
-    sustainabilityStats = {
-        co2Saved: 124, // kg
-        treesPlanted: 12,
-        distance: 850 // km
-    };
+
 
     constructor() {
         makeAutoObservable(this, {}, { autoBind: true });
