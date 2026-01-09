@@ -10,7 +10,7 @@ interface RouteResult {
 
 class RoutingService {
     private cache: NodeCache;
-    private readonly OSRM_BASE_URL = 'http://router.project-osrm.org/route/v1';
+    private readonly OSRM_BASE_URL = process.env.OSRM_BASE_URL || 'http://router.project-osrm.org/route/v1';
 
     constructor() {
         this.cache = new NodeCache({ stdTTL: 3600 }); // Cache routes for 1 hour (walking routes don't change much)
