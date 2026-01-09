@@ -757,7 +757,7 @@ export const RequestCarPage: React.FC = observer(() => {
                         <>
                             <button
                                 onClick={() => setShowGuestModal(false)}
-                                style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.1)', fontWeight: '600', cursor: 'pointer', color: 'white', transition: 'background 0.2s' }}
+                                style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: '#f3f4f6', border: 'none', fontWeight: '600', cursor: 'pointer', color: '#4b5563', transition: 'background 0.2s' }}
                             >
                                 Annuleren
                             </button>
@@ -771,12 +771,23 @@ export const RequestCarPage: React.FC = observer(() => {
                                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                                 }}
                             >
-                                Registreren
+                                Gratis registreren
                             </button>
                         </>
                     }
                 >
-                    <p>Als gast kun je niet boeken. Wil je een account aanmaken om verder te gaan?</p>
+                    <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
+                        <h3 style={{ margin: '0 0 0.5rem 0', color: '#111827' }}>Maak een account aan</h3>
+                        <p style={{ color: '#4b5563', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                            Om auto's te reserveren heb je een account nodig.
+                        </p>
+                        <ul style={{ textAlign: 'left', background: '#f9fafb', padding: '1rem 1.5rem', borderRadius: '12px', listStyle: 'none', margin: '0 0 1rem 0' }}>
+                            <li style={{ display: 'flex', gap: '10px', marginBottom: '8px', color: '#374151', fontSize: '0.95rem' }}><span>✅</span> Direct toegang tot alle auto's</li>
+                            <li style={{ display: 'flex', gap: '10px', marginBottom: '8px', color: '#374151', fontSize: '0.95rem' }}><span>✅</span> Geen borg nodig</li>
+                            <li style={{ display: 'flex', gap: '10px', color: '#374151', fontSize: '0.95rem' }}><span>✅</span> Verdien punten voor gratis ritten</li>
+                        </ul>
+                    </div>
                 </Modal>
 
                 {/* Success Toast */}

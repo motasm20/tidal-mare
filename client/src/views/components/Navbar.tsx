@@ -52,7 +52,14 @@ export const Navbar: React.FC = observer(() => {
                             <NavLink to="/register" className="nav-item">Registreren</NavLink>
                         </div>
                     ) : (
-                        <button onClick={handleLogout} className="logout-btn">Uitloggen</button>
+                        authViewModel.user?.role === 'guest' ? (
+                            <div className="navbar-links" style={{ display: 'flex', gap: '0.5rem' }}>
+                                <button onClick={handleLogout} className="nav-item" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}>Gastmodus afsluiten</button>
+                                <NavLink to="/register" className="btn-primary" style={{ textDecoration: 'none', padding: '0.5rem 1rem', fontSize: '0.9rem' }}>Account aanmaken</NavLink>
+                            </div>
+                        ) : (
+                            <button onClick={handleLogout} className="logout-btn">Uitloggen</button>
+                        )
                     )}
                 </div>
             </div>

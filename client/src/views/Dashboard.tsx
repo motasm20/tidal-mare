@@ -69,35 +69,50 @@ export const Dashboard: React.FC = observer(() => {
                 </div>
             </div>
 
-            {/* Guest Banner */}
-            {authViewModel.user?.role === 'guest' && (
+            {/* Sustainability Stats or Guest CTA */}
+            {authViewModel.user?.role !== 'guest' ? (
+                <SustainabilityStats
+                    co2Saved={authViewModel.sustainabilityStats.co2Saved}
+                    treesPlanted={authViewModel.sustainabilityStats.treesPlanted}
+                    distance={authViewModel.sustainabilityStats.distance}
+                />
+            ) : (
                 <div style={{
-                    background: '#fffbeb',
-                    border: '1px solid #fcd34d',
-                    color: '#92400e',
-                    padding: '1rem',
-                    borderRadius: '12px',
-                    marginBottom: '2rem',
+                    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                    borderRadius: '24px',
+                    padding: '2rem',
+                    color: 'white',
+                    marginBottom: '3rem',
+                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+                    position: 'relative',
+                    overflow: 'hidden',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px'
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '2rem'
                 }}>
-                    <span style={{ fontSize: '1.5rem' }}>👋</span>
-                    <div>
-                        <strong>Welkom als gast!</strong>
-                        <p style={{ margin: 0, fontSize: '0.95rem', opacity: 0.9 }}>
-                            Je kunt rondkijken en ritten zoeken, maar om daadwerkelijk te boeken moet je een account aanmaken.
+                    <div style={{ position: 'absolute', top: 0, right: 0, width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(56,189,248,0.2) 0%, rgba(0,0,0,0) 70%)', transform: 'translate(30%, -30%)' }}></div>
+
+                    <div style={{ flex: '1 1 400px', position: 'relative', zIndex: 1 }}>
+                        <div style={{ display: 'inline-block', background: 'rgba(56,189,248,0.2)', color: '#38bdf8', padding: '4px 12px', borderRadius: '99px', fontSize: '0.85rem', fontWeight: '600', marginBottom: '1rem', border: '1px solid rgba(56,189,248,0.3)' }}>
+                            Word lid van de community
+                        </div>
+                        <h2 style={{ fontSize: '2rem', fontWeight: '800', margin: '0 0 1rem 0', lineHeight: 1.2 }}>
+                            Begin met jouw impact
+                        </h2>
+                        <p style={{ color: '#94a3b8', fontSize: '1.1rem', maxWidth: '500px', margin: 0 }}>
+                            Houd bij hoeveel CO₂ je bespaart, plant digitale bomen en krijg toegang tot exclusieve auto's.
                         </p>
+                    </div>
+
+                    <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '1rem' }}>
+                        <Link to="/register" className="btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}>
+                            Account Aanmaken
+                        </Link>
                     </div>
                 </div>
             )}
-
-            {/* Sustainability Stats */}
-            <SustainabilityStats
-                co2Saved={authViewModel.sustainabilityStats.co2Saved}
-                treesPlanted={authViewModel.sustainabilityStats.treesPlanted}
-                distance={authViewModel.sustainabilityStats.distance}
-            />
 
             {/* Live Map Section */}
             <section style={{ marginBottom: '3rem' }}>

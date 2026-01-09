@@ -31,14 +31,18 @@ function App() {
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
 
-              {/* Customer Routes */}
-              <Route element={<PrivateRoute roles={['customer', 'admin', 'guest']} />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/request" element={<RequestCarPage />} />
-                <Route path="/booking/:id" element={<BookingDetailsPage />} />
+              {/* Customer Routes (Full Access) */}
+              <Route element={<PrivateRoute roles={['customer', 'admin']} />}>
                 <Route path="/my-rides" element={<MyRidesPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/booking/:id" element={<BookingDetailsPage />} />
                 <Route path="/delete-account" element={<DeleteAccountPage />} />
+              </Route>
+
+              {/* Shared Routes (Guest & Customer) */}
+              <Route element={<PrivateRoute roles={['customer', 'guest', 'admin']} />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/request" element={<RequestCarPage />} />
               </Route>
 
               {/* Admin Routes */}
