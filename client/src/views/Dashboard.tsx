@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { observer } from 'mobx-react-lite';
 import type { CarDTO, LocationDTO } from '../models';
-import { SustainabilityStats } from '../components/SustainabilityStats';
+
 import { CarMap } from '../components/Map/CarMap'; // Import CarMap
 import { authViewModel } from '../viewmodels';
 // @ts-ignore - Component exists but TS might not see it immediately in this environment
@@ -69,14 +69,8 @@ export const Dashboard: React.FC = observer(() => {
                 </div>
             </div>
 
-            {/* Sustainability Stats or Guest CTA */}
-            {authViewModel.user?.role !== 'guest' ? (
-                <SustainabilityStats
-                    co2Saved={authViewModel.sustainabilityStats.co2Saved}
-                    treesPlanted={authViewModel.sustainabilityStats.treesPlanted}
-                    distance={authViewModel.sustainabilityStats.distance}
-                />
-            ) : (
+            {/* Guest CTA */}
+            {authViewModel.user?.role === 'guest' && (
                 <div style={{
                     background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
                     borderRadius: '24px',
@@ -122,43 +116,54 @@ export const Dashboard: React.FC = observer(() => {
                     {/* Filters & Actions */}
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
                         {/* Filters */}
-                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', background: 'white', padding: '0.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
                             <button
                                 onClick={() => setFilterElectric(!filterElectric)}
                                 style={{
-                                    display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 12px',
-                                    borderRadius: '999px', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
-                                    background: filterElectric ? '#d1fae5' : 'white',
-                                    color: filterElectric ? '#065f46' : '#6b7280',
-                                    border: filterElectric ? '1px solid #059669' : '1px solid #d1d5db'
+                                    display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px',
+                                    borderRadius: '8px', fontSize: '0.9rem', cursor: 'pointer',
+                                    background: filterElectric ? '#ecfdf5' : 'transparent',
+                                    color: filterElectric ? '#059669' : '#64748b',
+                                    border: 'none',
+                                    transition: 'all 0.2s',
+                                    fontWeight: filterElectric ? '600' : '500'
                                 }}
                             >
                                 ⚡ Elektrisch
                             </button>
+
+                            <div style={{ width: '1px', height: '24px', background: '#e2e8f0' }}></div>
+
                             <select
                                 value={filterProvider}
                                 onChange={(e) => setFilterProvider(e.target.value)}
                                 style={{
-                                    padding: '4px 24px 4px 12px', borderRadius: '999px', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
-                                    background: 'white', color: '#6b7280', border: '1px solid #d1d5db',
+                                    padding: '6px 28px 6px 8px', borderRadius: '8px', fontSize: '0.9rem', fontWeight: '500', cursor: 'pointer',
+                                    background: 'transparent', color: '#64748b', border: 'none',
                                     appearance: 'none',
-                                    backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236b7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`,
-                                    backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.6rem center', backgroundSize: '0.6rem auto'
+                                    backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`,
+                                    backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '0.6rem auto',
+                                    outline: 'none'
                                 }}
                             >
                                 <option value="all">Alle aanbieders</option>
                                 <option value="MYWHEELS">MyWheels</option>
                                 <option value="GREENWHEELS">Greenwheels</option>
-                                <option value="EINDHOVEN">Overige (o.a. Iris)</option>
+                                <option value="EINDHOVEN">Overige Aanbieders</option>
                             </select>
+
+                            <div style={{ width: '1px', height: '24px', background: '#e2e8f0' }}></div>
+
                             <button
                                 onClick={() => setShowCharging(!showCharging)}
                                 style={{
-                                    display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 12px',
-                                    borderRadius: '999px', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
-                                    background: showCharging ? '#ecfdf5' : 'white',
-                                    color: showCharging ? '#059669' : '#6b7280',
-                                    border: showCharging ? '1px solid #10b981' : '1px solid #d1d5db'
+                                    display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px',
+                                    borderRadius: '8px', fontSize: '0.9rem', cursor: 'pointer',
+                                    background: showCharging ? '#eff6ff' : 'transparent',
+                                    color: showCharging ? '#2563eb' : '#64748b',
+                                    border: 'none',
+                                    transition: 'all 0.2s',
+                                    fontWeight: showCharging ? '600' : '500'
                                 }}
                             >
                                 🔌 Laadpalen
@@ -166,18 +171,39 @@ export const Dashboard: React.FC = observer(() => {
                             <button
                                 onClick={() => setShowParking(!showParking)}
                                 style={{
-                                    display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 12px',
-                                    borderRadius: '999px', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
-                                    background: showParking ? '#f3e8ff' : 'white', // light purple-100
-                                    color: showParking ? '#7c3aed' : '#6b7280', // purple-600
-                                    border: showParking ? '1px solid #8b5cf6' : '1px solid #d1d5db'
+                                    display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px',
+                                    borderRadius: '8px', fontSize: '0.9rem', cursor: 'pointer',
+                                    background: showParking ? '#f5f3ff' : 'transparent',
+                                    color: showParking ? '#7c3aed' : '#64748b',
+                                    border: 'none',
+                                    transition: 'all 0.2s',
+                                    fontWeight: showParking ? '600' : '500'
                                 }}
                             >
                                 🅿️ Parkeren
                             </button>
                         </div>
-                        <Link to="/request" style={{ fontSize: '0.9rem', color: 'var(--primary-600)', fontWeight: '600', textDecoration: 'none' }}>
-                            Bekijk alle auto's →
+                        <Link
+                            to="/request"
+                            style={{
+                                fontSize: '0.9rem',
+                                color: '#0f172a',
+                                fontWeight: '600',
+                                textDecoration: 'none',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                padding: '8px 16px',
+                                borderRadius: '99px',
+                                background: 'white',
+                                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                                border: '1px solid #e2e8f0',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = '#f8fafc'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; }}
+                        >
+                            Bekijk alle auto's <span style={{ fontSize: '1.1em', lineHeight: 1 }}>→</span>
                         </Link>
                     </div>
                 </div>
