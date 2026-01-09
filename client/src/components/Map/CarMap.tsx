@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import type { GeoJsonObject } from 'geojson';
 import type { CarDTO } from '../../../../shared/types';
 import { ProviderType } from '../../../../shared/types';
 
@@ -204,7 +205,7 @@ export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697]
     }, [showParkingLots, center]);
 
     // Routing State
-    const [routeGeoJson, setRouteGeoJson] = React.useState<any>(null);
+    const [routeGeoJson, setRouteGeoJson] = React.useState<GeoJsonObject | null>(null);
     const [walkStats, setWalkStats] = React.useState<{ duration: number; distance: number } | null>(null);
     const [selectedCarId, setSelectedCarId] = React.useState<string | null>(null);
 
