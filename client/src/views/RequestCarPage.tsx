@@ -252,7 +252,7 @@ export const RequestCarPage: React.FC = observer(() => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
                         {/* Combined Location Card */}
-                        <div style={cardStyle}>
+                        <div style={{ ...cardStyle, position: 'relative', zIndex: 30 }}>
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
                                 <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#111827', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
                                     <span style={{ background: 'var(--primary-100)', color: 'var(--primary-600)', padding: '6px', borderRadius: '8px', display: 'flex' }}><MapPinIcon className="w-5 h-5" /></span>
@@ -265,7 +265,7 @@ export const RequestCarPage: React.FC = observer(() => {
                                 <div style={{ position: 'absolute', left: '20px', top: '45px', bottom: '45px', width: '2px', background: 'linear-gradient(to bottom, #d1fae5, #e5e7eb, #fee2e2)', zIndex: 0 }}></div>
 
                                 {/* Start Location Input */}
-                                <div style={{ marginBottom: '0.5rem', position: 'relative', zIndex: 1 }}>
+                                <div style={{ marginBottom: '0.5rem', position: 'relative', zIndex: 20 }}>
                                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem', paddingLeft: '4px' }}>Ophalen</label>
                                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                                         <div style={{ marginTop: '12px', color: '#10b981' }}>●</div>
@@ -321,7 +321,7 @@ export const RequestCarPage: React.FC = observer(() => {
                                 </div>
 
                                 {/* End Location Input */}
-                                <div style={{ marginBottom: '1.5rem', position: 'relative', zIndex: 1 }}>
+                                <div style={{ marginBottom: '1.5rem', position: 'relative', zIndex: 10 }}>
                                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem', paddingLeft: '4px' }}>Bestemming</label>
                                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                                         <div style={{ marginTop: '12px', color: '#ef4444' }}>●</div>
@@ -353,7 +353,7 @@ export const RequestCarPage: React.FC = observer(() => {
                         </div>
 
                         {/* Details Card */}
-                        <div style={cardStyle}>
+                        <div style={{ ...cardStyle, position: 'relative', zIndex: 1 }}>
                             <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#111827', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <span style={{ background: '#e0e7ff', color: '#4f46e5', padding: '6px', borderRadius: '8px', display: 'flex' }}><UserIcon className="w-5 h-5" /></span>
                                 Voorkeuren
