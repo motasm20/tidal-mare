@@ -16,6 +16,7 @@ interface CarMapProps {
     showParkingLots?: boolean;
     onSelectCar?: (car: CarDTO) => void;
     destination?: [number, number] | null;
+    userLocation?: [number, number] | null;
 }
 
 // Component to update map center when props change
@@ -154,7 +155,7 @@ const CarPopupContent: React.FC<{ car: CarDTO; onSelectCar?: (car: CarDTO) => vo
     );
 };
 
-export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697], zoom = 13, showChargingStations = false, showParkingLots = false, onSelectCar, destination }) => {
+export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697], zoom = 13, showChargingStations = false, showParkingLots = false, onSelectCar, destination, userLocation }) => {
     const [chargingPoints, setChargingPoints] = React.useState<ChargingPointDTO[]>([]);
 
     useEffect(() => {
@@ -254,6 +255,26 @@ export const CarMap: React.FC<CarMapProps> = ({ cars, center = [51.4416, 5.4697]
                         data={routeGeoJson}
                         style={{ color: '#3b82f6', weight: 4, dashArray: '10, 10', opacity: 0.8 }}
                     />
+                )}
+
+                {/* User Location Marker */}
+                {userLocation && (
+                    <CircleMarker
+                        center={userLocation}
+                        radius={8}
+                        pathOptions={{
+                            color: 'white',
+                            fillColor: '#2563eb', // Bright blue
+                            fillOpacity: 1,
+                            weight: 2
+                        }}
+                    >
+                        <Popup>
+                            <div style={{ padding: '5px' }}>
+                                <strong>📍 Je bent hier</strong>
+                            </div>
+                        </Popup>
+                    </CircleMarker>
                 )}
 
                 {/* Cars Layer */}
