@@ -1,18 +1,14 @@
 import { CarDTO, LocationDTO } from '../../../shared/types';
 import { ICarProvider, MatchingCriteria } from '../providers/ICarProvider';
-import { DummyProvider } from '../providers/DummyProvider';
 import { GreenWheelsPlaceholder } from '../providers/GreenWheelsPlaceholder';
 import { MyWheelsPlaceholder } from '../providers/MyWheelsPlaceholder';
 
-import { EindhovenProvider } from '../providers/EindhovenProvider';
 import { NationalProvider } from '../providers/NationalProvider';
 
 class MatchingService {
     private providers: ICarProvider[] = [
-        new DummyProvider(),
         new GreenWheelsPlaceholder(),
         new MyWheelsPlaceholder(),
-        new EindhovenProvider(),
         new NationalProvider()
     ];
 
