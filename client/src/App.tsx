@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LandingPage } from './views/LandingPage';
 import { LoginPage } from './views/LoginPage';
 import { RegisterPage } from './views/RegisterPage';
+import { TermsPage } from './views/TermsPage';
+import { PrivacyPage } from './views/PrivacyPage';
 import { PrivateRoute } from './views/components/PrivateRoute';
 
 import { Dashboard } from './views/Dashboard';
@@ -26,6 +28,8 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
 
               {/* Customer Routes */}
               <Route element={<PrivateRoute roles={['customer', 'admin', 'guest']} />}>
