@@ -11,7 +11,44 @@ class CarsRepo {
             fuelType: FuelType.EV,
             provider: ProviderType.DUMMY,
             pricePerHourEstimate: 15,
-            range: 400
+            range: 400,
+            location: { latitude: 51.4416, longitude: 5.4697, address: 'Strijp-S, Eindhoven' }
+        },
+        {
+            id: 'c2',
+            make: 'Volkswagen',
+            model: 'ID.3',
+            seats: 5,
+            luggageCapacity: 2,
+            fuelType: FuelType.EV,
+            provider: ProviderType.GREENWHEELS,
+            pricePerHourEstimate: 8,
+            range: 350,
+            location: { latitude: 51.4380, longitude: 5.4750, address: 'Centrum, Eindhoven' }
+        },
+        {
+            id: 'c3',
+            make: 'Kia',
+            model: 'Niro',
+            seats: 5,
+            luggageCapacity: 3,
+            fuelType: FuelType.EV,
+            provider: ProviderType.MYWHEELS,
+            pricePerHourEstimate: 9,
+            range: 450,
+            location: { latitude: 51.4500, longitude: 5.4600, address: 'Woensel, Eindhoven' }
+        },
+        {
+            id: 'c4',
+            make: 'Hyundai',
+            model: 'Kona',
+            seats: 5,
+            luggageCapacity: 2,
+            fuelType: FuelType.HYBRID,
+            provider: ProviderType.DUMMY,
+            pricePerHourEstimate: 7,
+            range: 600,
+            location: { latitude: 51.4600, longitude: 5.4500, address: 'Best, Eindhoven' }
         }
     ];
 

@@ -12,8 +12,8 @@ class MatchingService {
         new DummyProvider(),
         new GreenWheelsPlaceholder(),
         new MyWheelsPlaceholder(),
-        new EindhovenProvider(),
-        new NationalProvider()
+        // new EindhovenProvider(), // Disabling external open data providers due to low quality metadata
+        // new NationalProvider()   // Disabling national provider to clean up map
     ];
 
     async findMatches(criteria: MatchingCriteria): Promise<CarDTO[]> {
