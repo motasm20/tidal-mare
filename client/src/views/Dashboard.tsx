@@ -11,7 +11,6 @@ import { authViewModel } from '../viewmodels';
 export const Dashboard: React.FC = observer(() => {
     const [cars, setCars] = useState<CarDTO[]>([]);
     const [loadingMap, setLoadingMap] = useState(true);
-    const [mapCenter, setMapCenter] = useState<[number, number]>([51.4416, 5.4697]);
 
     // Filter State
     const [filterElectric, setFilterElectric] = useState(false);
@@ -23,9 +22,6 @@ export const Dashboard: React.FC = observer(() => {
     useEffect(() => {
         const fetchCars = async (latitude: number, longitude: number, address: string = 'Huidige Locatie') => {
             try {
-                if (latitude && longitude) {
-                    setMapCenter([latitude, longitude]);
-                }
                 const location: LocationDTO = {
                     address: address,
                     latitude: latitude,
@@ -237,7 +233,7 @@ export const Dashboard: React.FC = observer(() => {
                                 if (filterProvider !== 'all' && car.provider !== filterProvider) return false;
                                 return true;
                             })}
-                            center={mapCenter}
+                            center={[51.4416, 5.4697]}
                             zoom={12}
                             showChargingStations={showCharging}
                             showParkingLots={showParking}
