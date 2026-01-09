@@ -92,7 +92,7 @@ export const Dashboard: React.FC = observer(() => {
 
             {/* Guest CTA */}
             {authViewModel.user?.role === 'guest' && (
-                <div style={{
+                <div className="guest-cta-card" style={{
                     background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
                     borderRadius: '24px',
                     padding: '2rem',
@@ -109,7 +109,7 @@ export const Dashboard: React.FC = observer(() => {
                 }}>
                     <div style={{ position: 'absolute', top: 0, right: 0, width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(56,189,248,0.2) 0%, rgba(0,0,0,0) 70%)', transform: 'translate(30%, -30%)' }}></div>
 
-                    <div style={{ flex: '1 1 400px', position: 'relative', zIndex: 1 }}>
+                    <div className="guest-cta-content" style={{ flex: '1 1 400px', position: 'relative', zIndex: 1 }}>
                         <div style={{ display: 'inline-block', background: 'rgba(56,189,248,0.2)', color: '#38bdf8', padding: '4px 12px', borderRadius: '99px', fontSize: '0.85rem', fontWeight: '600', marginBottom: '1rem', border: '1px solid rgba(56,189,248,0.3)' }}>
                             Word lid van de community
                         </div>
@@ -121,7 +121,7 @@ export const Dashboard: React.FC = observer(() => {
                         </p>
                     </div>
 
-                    <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '1rem' }}>
+                    <div className="guest-cta-actions" style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '1rem' }}>
                         <Link to="/register" className="btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}>
                             Account Aanmaken
                         </Link>
@@ -130,14 +130,14 @@ export const Dashboard: React.FC = observer(() => {
             )}
 
             {/* Live Map Section */}
-            <section style={{ marginBottom: '3rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--slate-200)', paddingBottom: '0.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <section className="car-map-section" style={{ marginBottom: '3rem' }}>
+                <div className="car-map-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--slate-200)', paddingBottom: '0.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                     <h3 style={{ margin: 0 }}>🗺️ Live Beschikbaarheid</h3>
 
                     {/* Filters & Actions */}
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div className="filters-container" style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
                         {/* Filters */}
-                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', background: 'white', padding: '0.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+                        <div className="filter-group" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', background: 'white', padding: '0.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
                             <button
                                 onClick={() => setFilterElectric(!filterElectric)}
                                 style={{
@@ -153,7 +153,7 @@ export const Dashboard: React.FC = observer(() => {
                                 ⚡ Elektrisch
                             </button>
 
-                            <div style={{ width: '1px', height: '24px', background: '#e2e8f0' }}></div>
+                            <div className="hide-on-mobile" style={{ width: '1px', height: '24px', background: '#e2e8f0' }}></div>
 
                             <select
                                 value={filterProvider}
@@ -173,7 +173,7 @@ export const Dashboard: React.FC = observer(() => {
                                 <option value="EINDHOVEN">Overige Aanbieders</option>
                             </select>
 
-                            <div style={{ width: '1px', height: '24px', background: '#e2e8f0' }}></div>
+                            <div className="hide-on-mobile" style={{ width: '1px', height: '24px', background: '#e2e8f0' }}></div>
 
                             <button
                                 onClick={() => setShowCharging(!showCharging)}
