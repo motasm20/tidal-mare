@@ -130,7 +130,7 @@ export class AuthViewModel {
 
     // ... (rest of the file until register)
 
-    async register(email: string, password: string): Promise<void> {
+    async register(email: string, password: string, firstName: string, lastName: string): Promise<void> {
         this.isLoading = true;
         this.error = null;
 
@@ -142,7 +142,7 @@ export class AuthViewModel {
         }
 
         try {
-            await AuthService.register(email, password);
+            await AuthService.register(email, password, firstName, lastName);
             // User requested no auto-login. Force logout so they must verify and login manually.
             await AuthService.logout();
             runInAction(() => {

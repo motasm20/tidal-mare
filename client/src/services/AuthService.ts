@@ -60,14 +60,14 @@ export class AuthService {
         StorageService.removeToken();
     }
 
-    static async register(email: string, password: string): Promise<User> {
+    static async register(email: string, password: string, firstName: string, lastName: string): Promise<User> {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         const token = await user.getIdToken();
         StorageService.setToken(token);
 
         // Create user document
-        await this.createUserDocument(user);
+        await this.createUserDocument(user, firstName, lastName);
 
         // Send verification email
         await this.sendVerificationEmail(user);
@@ -106,7 +106,7 @@ export class AuthService {
     }
 
     // Helper: Create user document if it doesn't exist
-    private static async createUserDocument(user: User) {
+    private static async createUserDocument(user: User, firstName: string = '', lastName: string = '') {
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
@@ -115,7 +115,9 @@ export class AuthService {
                 email: user.email,
                 role: 'customer', // Default role
                 createdAt: new Date().toISOString(),
-                displayName: user.displayName || '',
+                displayName: user.displayName || `${firstName} ${lastName}`.trim(),
+                firstName: firstName,
+                lastName: lastName,
                 photoURL: user.photoURL || ''
             });
         }
